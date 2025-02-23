@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .navbar {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(141, 141, 141, 0.3);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .navbar h2{
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .menu-button {
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            outline: none;
+        }
+        .sidebar {
+            position: fixed;
+            left: -250px;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #2c3e50;
+            padding-top: 60px;
+            transition: left 0.3s;
+        }
+        .sidebar a {
+            display: block;
+            padding: 15px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .sidebar .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+        }
+        .content {
+            text-align: center;
+            margin-top: 80px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <button class="menu-button" onclick="toggleSidebar()">&#9776;</button>
+        <h2>Dashboard</h2>
+    </div>
+    
+    <div class="sidebar" id="mySidebar">
+        <span class="close-btn" onclick="toggleSidebar()">&times;</span>
+        <a href="#">Profile</a>
+        <a href="#">Edit Profile</a>
+        <a href="#">View Remaining Session</a>
+        <a href="#">View Announcement</a>
+        <a href="#">Lab Rules/Sit-in</a>
+        <a href="#">History</a>
+        <a href="#">Reservation</a>
+        <a href="#">Log-out</a>
+    </div>
+    
+    <div class="content">
+        <h3>Welcome to Your Dashboard</h3>
+        <p>Manage your profile, reservations, and more.</p>
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("mySidebar");
+            if (sidebar.style.left === "0px") {
+                sidebar.style.left = "-250px";
+            } else {
+                sidebar.style.left = "0px";
+            }
+        }
+    </script>
+</body>
+</html>
