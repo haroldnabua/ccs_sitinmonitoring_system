@@ -7,28 +7,28 @@ header('Content-Type: application/json');
 $loginstatus = "error";
 $message = "Login failed.";
 
-if ($_SERVER[["REQUEST_METHOD"] == "POST"]){
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $userName = isset($_POST["userName"]) ? mysqli_real_escape_string($conn, $_POST["userName"]) : '';
     $password = isset($_POST["password"]) ? mysqli_real_escape_string($conn, $_POST["password"]) : '';
 
-    if(empty($userName) || empty($password)){
+    if (empty($userName) || empty($password)) {
         $loginstatus = 'NoData';
         $message = "Please fill in both fields.";
-    }else{
+    } else {
         $query = "SELECT * FROM accounts WHERE userName = ? AND password = ?";
 
-        if($statement = $conn->prepare($query)){
+        if ($statement = $conn->prepare($query)) {
             $statement->bind_param("ss", $userName, $password);
-            
-            if($statement->execute()){
+
+            if ($statement->execute()) {
                 $loginstatus = "success";
-                $message = "Login successful."
-            }else{
+                $message = "Login successful.";
+            } else {
                 $message = "Error executing statement: " . $statement->error;
             }
 
             $statement->close();
-        }else{
+        } else {
             $message = "Error preparing statement: " . $conn->error;
         }
 
@@ -36,7 +36,6 @@ if ($_SERVER[["REQUEST_METHOD"] == "POST"]){
         echo json_encode(["status" => $loginstatus, "message" => $message]);
         exit;
     }
-
 }
 
 ?>
