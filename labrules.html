@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sit-in Rules</title>
+    <link rel="stylesheet" href="labrules.css"> <!-- Link to the external CSS file -->
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>SIT-IN</h2>
+            </div>
+            
+            <div class="user-profile">
+                <img src="lofi.jpg" alt="Profile" class="profile-img">
+                <div class="user-name">Harold Nabua</div>
+                <div class="user-role">Student</div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <div class="menu-item">
+                    <i>📊</i>
+                    <span><a href="dashboard.html">Dashboard</a></span>
+                </div>
+                <div class="menu-item">
+                    <i>🗓️</i>
+                    <span>Reservation</span>
+                </div>
+                <div class="menu-item active">
+                    <i>📝</i>
+                    <span><a href="labrules.html">Lab Rules/Sit-in Rules</a></span>
+                </div>
+                <div class="menu-item">
+                    <i>👤</i>
+                    <span><a href="editprofile.html">Edit Profile</a></span>
+                </div>
+                <div class="menu-item" onclick="logout()">
+                    <i>🚪</i>
+                    <span>Logout</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="page-header">
+                <h1>Sit-in Rules & Guidelines</h1>
+            </div>
+            
+            <!-- Rules Section -->
+            <div class="card rules-card">
+                <div class="card-header">
+                    <div class="card-title">Sit-in Rules & Guidelines</div>
+                    <div class="card-subtitle">Important information for users</div>
+                </div>
+                <div class="card-body">
+                    <ul class="rules-list">
+                        <li>Reservations must be made at least 24 hours in advance.</li>
+                        <li>Maximum session duration is 3 hours per day.</li>
+                        <li>Monthly limit of 20 hours per student.</li>
+                        <li>Please arrive on time. Your reservation will be cancelled if you're more than 15 minutes late.</li>
+                        <li>Food and drinks are not allowed in the lab areas.</li>
+                        <li>Installing software without permission is prohibited.</li>
+                        <li>Be respectful of other users by keeping noise to a minimum.</li>
+                        <li>Report any technical issues to the lab administrator immediately.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function logout() {
+            if (confirm("Are you sure you want to log out?")) {
+                window.location.href = "login.html";
+            }
+        }
+    </script>
+</body>
+</html>
