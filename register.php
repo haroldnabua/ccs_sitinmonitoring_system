@@ -1,10 +1,8 @@
 <?php
-
 include("connection.php");
 header('Content-Type: application/json');
 
-$regstatus = "error";
-$message = "Registration failed.";
+$response = ["status" => "error", "message" => "Registration failed."];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $idno = isset($_POST["idno"]) ? mysqli_real_escape_string($conn, $_POST["idno"]) : '';
@@ -17,34 +15,53 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $userName = isset($_POST["userName"]) ? mysqli_real_escape_string($conn, $_POST["userName"]) : '';
     $password = isset($_POST["password"]) ? mysqli_real_escape_string($conn, $_POST["password"]) : '';
     $confirmpassword = isset($_POST["confirmpassword"]) ? mysqli_real_escape_string($conn, $_POST["confirmpassword"]) : '';
-    $remaining_session = isset($_POST["remaining_session"]) ? mysqli_real_escape_string($conn, $_POST["remaining_session"]) : '';
+    $remaining_session = isset($_POST["remaining_session"]) ? intval($_POST["remaining_session"]) : 0;
 
     if (empty($lastName) || empty($firstName) || empty($email) || empty($course) || empty($yearLevel) || empty($password) || empty($confirmpassword)) {
-        $regstatus = 'NoData';
+        $response["message"] = "All fields are required.";
     } elseif ($password !== $confirmpassword) {
-        $regstatus = 'error';
-        $message = "Passwords do not match.";
+        $response["message"] = "Passwords do not match.";
     } else {
-        $query = "INSERT INTO accounts(idno, lastName, firstName, midName, course, yearLevel, email, userName, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
-        if ($statement = $conn->prepare($query)) {
-            $statement->bind_param("issssisss", $idno, $lastName, $firstName, $midName, $course, $yearLevel, $email, $userName, $password);
-
-            if ($statement->execute()) {
-                $regstatus = "success";
-                $message = "Registration successful.";
+        $checkQuery = "SELECT idno FROM accounts WHERE email = ? OR userName = ?";
+        if ($checkStmt = $conn->prepare($checkQuery)) {
+            $checkStmt->bind_param("ss", $email, $userName);
+            $checkStmt->execute();
+            $checkStmt->store_result();
+            
+            if ($checkStmt->num_rows > 0) {
+                $response["message"] = "Email or username already exists.";
             } else {
-                $message = "Error executing statement: " . $statement->error;
+                
+                $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+                
+                $insertQuery = "INSERT INTO accounts(idno, lastName, firstName, midName, course, yearLevel, email, userName, password, remaining_session) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                
+                if ($stmt = $conn->prepare($insertQuery)) {
+                    $stmt->bind_param("issssisssi", $idno, $lastName, $firstName, $midName, $course, $yearLevel, $email, $userName, $hashedPassword, $remaining_session);
+
+                    if ($stmt->execute()) {
+                        $response["status"] = "success";
+                        $response["message"] = "Registration successful.";
+                    } else {
+                        $response["message"] = "Error executing statement: " . $stmt->error;
+                    }
+
+                    $stmt->close();
+                } else {
+                    $response["message"] = "Error preparing statement: " . $conn->error;
+                }
             }
 
-            $statement->close();
+            $checkStmt->close();
         } else {
-            $message = "Error preparing statement: " . $conn->error;
+            $response["message"] = "Database error: " . $conn->error;
         }
-
-        $conn->close();
-        echo json_encode(["status" => $regstatus, "message" => $message]);
-        exit;
     }
 }
+
+$conn->close();
+http_response_code($response["status"] === "success" ? 200 : 400);
+echo json_encode($response);
 ?>
