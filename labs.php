@@ -5,6 +5,7 @@ header('Content-Type: application/json');
 $query = "SELECT * FROM labs";
 $result = $conn->query($query);
 
+/*what the hell is this*/
 $labs = [];
 while ($row = $result->fetch_assoc()) {
     $labs[] = $row;

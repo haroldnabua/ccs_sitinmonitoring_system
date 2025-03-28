@@ -1,14 +1,11 @@
 <?php
 
-$db_server = '127.0.0.1';
-$db_user = 'root';
-$db_pass = "";
-$db_name = 'nabuadb';
+session_start();
+include("connection.php");
 
-$conn = mysqli_connect($db_server, $db_user, $db_pass, $db_name);
-
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+if (!isset($_SESSION['idno'])) {
+    echo "ERROR";
+    exit;
 }
 
 if($_SERVER["REQUEST_METHOD"] === "POST"){
@@ -52,7 +49,4 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
 }
 
 $conn->close();
-
-
-
 ?>

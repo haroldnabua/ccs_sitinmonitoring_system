@@ -11,6 +11,8 @@ if (!isset($_SESSION["user_id"])) {
     exit;
 }
 
+
+/*ambot unsa ni*/
 $user_id = $_SESSION["user_id"];
 $lab_id = $_POST["lab_id"] ?? "";
 $date = $_POST["date"] ?? "";

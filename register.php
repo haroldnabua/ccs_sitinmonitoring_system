@@ -4,10 +4,11 @@ header('Content-Type: application/json');
 
 $response = ["status" => "error", "message" => "Registration failed."];
 
+/*clean handling sa mga baryabols*/
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $idno = isset($_POST["idno"]) ? mysqli_real_escape_string($conn, $_POST["idno"]) : '';
     $lastName = isset($_POST["lastName"]) ? mysqli_real_escape_string($conn, $_POST["lastName"]) : '';
-    $firstName = isset($_POST["firstName"]) ? mysqli_real_escape_string($conn, $_POST["firstName"]) : '';   
+    $firstName = isset($_POST["firstName"]) ? mysqli_real_escape_string($conn, $_POST["firstName"]) : ''; 
     $midName = isset($_POST["midName"]) ? mysqli_real_escape_string($conn, $_POST["midName"]) : '';
     $course = isset($_POST["course"]) ? mysqli_real_escape_string($conn, $_POST["course"]) : '';
     $yearLevel = isset($_POST["yearLevel"]) ? mysqli_real_escape_string($conn, $_POST["yearLevel"]) : '';
@@ -15,11 +16,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $userName = isset($_POST["userName"]) ? mysqli_real_escape_string($conn, $_POST["userName"]) : '';
     $password = isset($_POST["password"]) ? mysqli_real_escape_string($conn, $_POST["password"]) : '';
     $confirmpassword = isset($_POST["confirmpassword"]) ? mysqli_real_escape_string($conn, $_POST["confirmpassword"]) : '';
-    $remaining_session = isset($_POST["remaining_session"]) ? intval($_POST["remaining_session"]) : 0;
+    $remaining_session = 30;
 
     if (empty($lastName) || empty($firstName) || empty($email) || empty($course) || empty($yearLevel) || empty($password) || empty($confirmpassword)) {
-        $response["message"] = "All fields are required.";
+        $response["status"] = "error";
+        $response["message"] = "All fields required!";
     } elseif ($password !== $confirmpassword) {
+        $response["status"] = "error";
         $response["message"] = "Passwords do not match.";
     } else {
         $checkQuery = "SELECT idno FROM accounts WHERE email = ? OR userName = ?";

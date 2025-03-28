@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile - Laboratory Monitoring System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #4d2eff;
@@ -19,7 +20,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
         
         body {
@@ -319,7 +320,6 @@
     </div>
     
     <script>
-        // Preview uploaded avatar
         document.getElementById('avatarUpload').addEventListener('change', function(event) {
             const file = event.target.files[0];
             if (file) {
@@ -331,11 +331,9 @@
             }
         });
         
-        // Form submission handler (placeholder)
         document.getElementById('editProfileForm').addEventListener('submit', function(event) {
             event.preventDefault();
             
-            // Validate password match
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             
@@ -344,28 +342,20 @@
                 return;
             }
             
-            // In a real application, you would send this data to your server
             alert('Profile updated successfully!');
-            
-            // Redirect back to dashboard or profile page
-            // window.location.href = 'dashboard.html';
         });
-        
-        // Load user data (placeholder - in a real app this would come from your backend)
+
         function loadUserData() {
-            // Example data - replace with actual API call
             const userData = {
-                firstName: 'John',
-                lastName: 'Doe',
-                email: 'john.doe@example.com',
+                firstName: 'Harold',
+                lastName: 'Nabua',
+                email: 'stratstrat@gmail.com',
                 phone: '(555) 123-4567',
-                department: 'chemistry',
-                position: 'Lab Technician',
-                username: 'johndoe',
-                // avatar would be loaded into the img src
+                department: 'BSIT',
+                position: 'Student',
+                username: 'harold00',
             };
             
-            // Populate form fields
             for (const [key, value] of Object.entries(userData)) {
                 const element = document.getElementById(key);
                 if (element) {
@@ -374,7 +364,6 @@
             }
         }
         
-        // Load user data when page loads
         window.addEventListener('DOMContentLoaded', loadUserData);
     </script>
 </body>
