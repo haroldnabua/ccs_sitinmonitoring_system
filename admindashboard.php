@@ -1,5 +1,33 @@
+<?php
+session_start();
+include("connection.php");
+
+if (!isset($_SESSION['idno'])) {
+    echo "ERROR";
+    exit;
+}
+
+$idno = $_SESSION['idno'];
+$role = $_SESSION['role'];
+
+$query = "SELECT *, CONCAT(lastName, ' ', midName, ' ', firstName) AS fullname, CONCAT(firstName, ' ', lastName) AS shortname FROM accounts WHERE idno = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $idno);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+} else {
+    echo "<script>alert('No Users Found.')</script>";
+    exit();
+}
+
+$conn->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +41,7 @@
             height: 100vh;
             background-color: #f5f5f5;
         }
-        
+
         .sidebar {
             width: 220px;
             background-color: #2e32a8;
@@ -23,18 +51,18 @@
             flex-direction: column;
             align-items: center;
         }
-        
+
         .sidebar-header {
             text-align: center;
             margin-bottom: 20px;
             padding: 0 10px;
         }
-        
+
         .profile {
             text-align: center;
             margin-bottom: 40px;
         }
-        
+
         .profile-pic {
             width: 80px;
             height: 80px;
@@ -42,48 +70,48 @@
             border: 3px solid white;
             overflow: hidden;
         }
-        
+
         .profile-name {
             margin-top: 10px;
             font-weight: bold;
         }
-        
+
         .profile-role {
             font-size: 0.8rem;
             opacity: 0.9;
         }
-        
+
         .nav-menu {
             width: 100%;
         }
-        
+
         .nav-item {
             padding: 12px 20px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
+
         .nav-item:hover {
             background-color: rgba(255, 255, 255, 0.1);
         }
-        
+
         .nav-item.active {
             background-color: rgba(255, 255, 255, 0.2);
         }
-        
+
         .main-content {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
         }
-        
+
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-        
+
         .btn {
             background-color: #4e54e8;
             color: white;
@@ -93,56 +121,56 @@
             cursor: pointer;
             font-weight: bold;
         }
-        
+
         .card-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 20px;
         }
-        
+
         .card {
             background-color: white;
             border-radius: 8px;
             padding: 20px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         .card-header {
             font-size: 1.1rem;
             color: #4e54e8;
             margin-bottom: 15px;
             font-weight: bold;
         }
-        
+
         .card-subheader {
             font-size: 0.8rem;
             color: #888;
             margin-bottom: 15px;
         }
-        
+
         .stats-container {
             display: flex;
             justify-content: space-around;
             text-align: center;
         }
-        
+
         .stat-box {
             padding: 15px;
             border-radius: 5px;
         }
-        
+
         .stat-value {
             font-size: 2.2rem;
             font-weight: bold;
             margin-bottom: 5px;
         }
-        
+
         .stat-label {
             font-size: 0.85rem;
             color: #555;
         }
-        
+
         .usage-bar {
             height: 10px;
             background-color: #e0e0e0;
@@ -150,12 +178,12 @@
             margin-top: 10px;
             overflow: hidden;
         }
-        
+
         .usage-progress {
             height: 100%;
             background-color: #4e54e8;
         }
-        
+
         .status-circle {
             display: inline-block;
             width: 12px;
@@ -163,81 +191,81 @@
             border-radius: 50%;
             margin-right: 5px;
         }
-        
+
         .status-active {
             background-color: #2ecc71;
         }
-        
+
         .status-offline {
             background-color: #e74c3c;
         }
-        
+
         .status-maintenance {
             background-color: #f39c12;
         }
-        
+
         .recent-list {
             list-style-type: none;
             padding: 0;
             margin: 0;
         }
-        
+
         .recent-item {
             padding: 10px 0;
             border-bottom: 1px solid #eee;
             display: flex;
             justify-content: space-between;
         }
-        
+
         .labs-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
         }
-        
+
         .lab-card {
             background-color: white;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         .lab-image {
             width: 100%;
             height: 150px;
             object-fit: cover;
         }
-        
+
         .lab-details {
             padding: 15px;
         }
-        
+
         .lab-title {
             font-weight: bold;
             font-size: 1.1rem;
             margin-bottom: 10px;
         }
-        
+
         .lab-stats {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
         }
-        
+
         .lab-stat {
             text-align: center;
         }
-        
+
         .lab-stat-value {
             font-weight: bold;
             font-size: 1.4rem;
         }
-        
+
         .lab-stat-label {
             font-size: 0.8rem;
             color: #777;
         }
-        
+
         .chart-container {
             height: 250px;
             display: flex;
@@ -246,7 +274,7 @@
             background-color: #f9f9f9;
             border-radius: 5px;
         }
-        
+
         .chart-placeholder {
             width: 100%;
             height: 200px;
@@ -259,23 +287,24 @@
         }
     </style>
 </head>
+
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>CCS Sit-in Monitoring System</h2>
         </div>
-        
+
         <div class="profile">
             <div class="profile-pic">
                 <img src="lofi.jpg" width="80px" height="80px" border-radius="50%" object-fit="cover" margin-bottom="10px">
             </div>
-            <div class="profile-name">Maria Santos</div>
-            <div class="profile-role">System Administrator</div>
+            <div class="profile-name"><?php echo htmlspecialchars($user['shortname']) ?></div>
+            <div class="profile-role">Admin</div>
         </div>
-        
+
         <div class="nav-menu">
-            <div class="nav-item active">Dashboard</div>
-            <div class="nav-item">Announcements</div>
+            <div class="nav-item active" onclick="window.location.href='admindashboard.php'">Dashboard</div>
+            <div class="nav-item" onclick="window.location.href='adminannouncements.php'">Announcements</div>
             <div class="nav-item">View Feedback</div>
             <div class="nav-item">Sit-in Records</div>
             <div class="nav-item">Student List</div>
@@ -283,13 +312,13 @@
             <div class="nav-item">Logout</div>
         </div>
     </div>
-    
+
     <div class="main-content">
         <div class="header">
             <h1>Admin Dashboard</h1>
             <button class="btn">Generate Reports</button>
         </div>
-        
+
         <div class="card-container">
             <div class="card">
                 <div class="card-header">System Overview</div>
@@ -309,7 +338,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">Current Usage</div>
                 <div class="card-subheader">April 9, 2025</div>
@@ -341,7 +370,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">System Status</div>
                 <div class="card-subheader">Live monitoring</div>
@@ -367,14 +396,14 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="card" style="margin-bottom: 20px;">
             <div class="card-header">Lab Usage Analytics</div>
             <div class="chart-container">
                 <div class="chart-placeholder">Weekly Usage Chart</div>
             </div>
         </div>
-        
+
         <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px;">
             <div class="card">
                 <div class="card-header">Recent Activities</div>
@@ -416,7 +445,7 @@
                     </li>
                 </ul>
             </div>
-            
+
             <div class="card">
                 <div class="card-header">Top Users</div>
                 <ul class="recent-list">
@@ -451,9 +480,9 @@
                 </ul>
             </div>
         </div>
-        
+
         <h2>Laboratory Status</h2>
-        
+
         <div class="labs-grid">
             <div class="lab-card">
                 <img src="lofi.jpg" alt="Computer Lab 524" class="lab-image">
@@ -488,7 +517,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="lab-card">
                 <img src="lofi.jpg" alt="Computer Lab 530" class="lab-image">
                 <div class="lab-details">
@@ -522,7 +551,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="lab-card">
                 <img src="lofi.jpg" alt="Computer Lab 544" class="lab-image">
                 <div class="lab-details">
@@ -556,7 +585,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="lab-card">
                 <img src="lofi.jpg" alt="Computer Lab 3" class="lab-image">
                 <div class="lab-details">
@@ -593,4 +622,5 @@
         </div>
     </div>
 </body>
+
 </html>

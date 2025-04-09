@@ -8,6 +8,7 @@ if (!isset($_SESSION['idno'])) {
 }
 
 $idno = $_SESSION['idno'];
+$role = $_SESSION['role'];
 
 $query = "SELECT *, CONCAT(lastName, ' ', midName, ' ', firstName) AS fullname, CONCAT(firstName, ' ', lastName) AS shortname FROM accounts WHERE idno = ?";
 $stmt = $conn->prepare($query);
@@ -435,7 +436,7 @@ $conn->close();
             <div class="user-profile">
                 <img src="lofi.jpg" alt="Profile" class="profile-img">
                 <div class="user-name"><?php echo htmlspecialchars($user['shortname']) ?></div>
-                <div class="user-role">Student</div>
+                <div class="user-role"><?php echo htmlspecialchars($role) ?></div>
             </div>
             <script>
                 function link2logout() {
