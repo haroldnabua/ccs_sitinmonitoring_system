@@ -1,39 +1,53 @@
-<?php 
-    session_start();
-    include('connection.php');
-    
-    $loginStatus = '';
+<?php
+session_start();
+include('connection.php');
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $username = trim($_POST["userName"]);
-        $password = trim($_POST["password"]);
+$loginStatus = '';
 
-        // Check for empty input fields
-        if (empty($username) || empty($password)) {
-            $loginStatus = 'nodata';
-        } else {
-            // Use prepared statements to prevent SQL injection
-            $query = "SELECT * FROM accounts WHERE userName = ?";
-            $stmt = mysqli_prepare($conn, $query);
-            mysqli_stmt_bind_param($stmt, "s", $username);
-            mysqli_stmt_execute($stmt);
-            $result = mysqli_stmt_get_result($stmt);
-            $user = mysqli_fetch_assoc($result);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $username = trim($_POST["userName"]);
+    $password = trim($_POST["password"]);
 
-            // Verify password if user exists
-            if ($user && password_verify($password, $user['password'])) {
-                $_SESSION['idno'] = $user['idno'];
+    // Check for empty input fields
+    if (empty($username) || empty($password)) {
+        $loginStatus = 'nodata';
+    } else {
+        // Use prepared statements to prevent SQL injection
+        $query = "SELECT * FROM accounts WHERE userName = ?";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "s", $username);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $user = mysqli_fetch_assoc($result);
+
+        // Verify password if user exists
+        if ($user && password_verify($password, $user['password'])) {
+            $_SESSION['idno'] = $user['idno'];
+            $_SESSION['username'] = $user['userName'];
+            $_SESSION['role'] = $user['role'];
+
+            if ($user['role'] === 'Student' || $user['role'] === 'Admin') {
                 $loginStatus = 'success';
+                $loginRole = $user['role'];
+                /*if ($user['role'] === 'Admin') {
+                    header("Location: admindashboard.html");
+                } else {
+                    header("Location:dashboard.php");
+                }*/
             } else {
-                $loginStatus = 'failed';
+                $loginStatus = 'unauthorized';
             }
-
-            mysqli_stmt_close($stmt);
+        } else {
+            $loginStatus = 'failed';
         }
+
+        mysqli_stmt_close($stmt);
     }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en-us">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,6 +55,7 @@
     <link rel="stylesheet" href="css/loginstyle.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
     <h2>Welcome to CCS Sit-in Monitoring System</h2>
     <div class="login-container">
@@ -63,6 +78,7 @@
 
     <script>
         const status = '<?php echo $loginStatus; ?>';
+        const role = '<?php echo $loginRole; ?>';
 
         if (status === 'nodata') {
             Swal.fire({
@@ -79,7 +95,11 @@
                 confirmButtonText: 'OK',
                 timerProgressBar: true,
             }).then(() => {
-                window.location.href = "dashboard.php";
+                if (role === 'Admin') {
+                    window.location.href = "admindashboard.php";
+                } else {
+                    window.location.href = "dashboard.php";
+                }
             });
         } else if (status === 'failed') {
             Swal.fire({
@@ -91,4 +111,5 @@
         }
     </script>
 </body>
+
 </html>

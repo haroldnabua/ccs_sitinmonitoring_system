@@ -8,9 +8,10 @@ if (!isset($_SESSION['idno'])) {
 }
 
 $idno = $_SESSION['idno'];
+$role = $_SESSION['role'];
 
 $query = "SELECT *, CONCAT(lastName, ' ', midName, ' ', firstName) AS fullname, CONCAT(firstName, ' ', lastName) AS shortname FROM accounts WHERE idno = ?";
-$stmt = $conn->prepare($query); 
+$stmt = $conn->prepare($query);
 $stmt->bind_param("i", $idno);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -28,6 +29,7 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,47 +48,47 @@ $conn->close();
             --gray-color: #6c757d;
             --hover-color: #4895ef;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
-        
+
         body {
             background-color: #f5f5f5;
         }
-        
+
         .container {
             display: flex;
             min-height: 100vh;
         }
-        
+
         .sidebar {
             width: 250px;
             background-color: rgb(36, 38, 158);
             color: white;
             transition: all 0.3s ease;
         }
-        
+
         .sidebar-header {
             padding: 20px;
             text-align: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .sidebar-header h2 {
             font-size: 1.5rem;
             font-weight: 600;
         }
-        
+
         .user-profile {
             padding: 20px;
             text-align: center;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
+
         .profile-img {
             width: 80px;
             height: 80px;
@@ -95,22 +97,22 @@ $conn->close();
             margin-bottom: 10px;
             border: 3px solid white;
         }
-        
+
         .user-name {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 5px;
         }
-        
+
         .user-role {
             font-size: 0.9rem;
             opacity: 0.8;
         }
-        
+
         .sidebar-menu {
             padding: 20px 0;
         }
-        
+
         .menu-item {
             padding: 12px 20px;
             display: flex;
@@ -119,22 +121,22 @@ $conn->close();
             transition: all 0.3s;
             color: rgb(247, 247, 247);
         }
-        
+
         .menu-item:hover {
             background-color: var(--hover-color);
         }
-        
+
         .menu-item.active {
             background-color: rgb(6, 1, 83);
             border-left: 4px solid white;
         }
-        
+
         .main-content {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
         }
-        
+
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -143,17 +145,17 @@ $conn->close();
             padding-bottom: 15px;
             border-bottom: 1px solid #eee;
         }
-        
+
         .page-header h1 {
             font-size: 1.8rem;
             color: var(--dark-color);
         }
-        
+
         .action-buttons {
             display: flex;
             gap: 10px;
         }
-        
+
         .btn {
             padding: 10px 16px;
             border-radius: 5px;
@@ -162,12 +164,12 @@ $conn->close();
             font-weight: 500;
             transition: all 0.3s ease;
         }
-        
+
         .btn-primary {
             background-color: var(--primary-color);
             color: white;
         }
-        
+
         .btn-primary:hover {
             background-color: var(--hover-color);
         }
@@ -178,7 +180,7 @@ $conn->close();
             gap: 20px;
             margin-bottom: 30px;
         }
-        
+
         .card {
             background-color: white;
             border-radius: 10px;
@@ -186,54 +188,54 @@ $conn->close();
             overflow: hidden;
             transition: transform 0.3s ease;
         }
-        
+
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
-        
+
         .card-header {
             padding: 15px 20px;
             background-color: var(--primary-color);
             color: white;
         }
-        
+
         .card-body {
             padding: 20px;
         }
-        
+
         .card-title {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: 5px;
         }
-        
+
         .card-subtitle {
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.8);
         }
-        
+
         /* Upcoming Reservation */
         .reservation-details {
             margin-top: 15px;
         }
-        
+
         .detail-item {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
             border-bottom: 1px solid #eee;
         }
-        
+
         .detail-label {
             font-weight: 500;
             color: var(--gray-color);
         }
-        
+
         .detail-value {
             font-weight: 600;
         }
-        
+
         .status-badge {
             display: inline-block;
             padding: 5px 10px;
@@ -241,29 +243,29 @@ $conn->close();
             font-size: 0.8rem;
             font-weight: 500;
         }
-        
+
         .status-confirmed {
             background-color: rgba(56, 176, 0, 0.1);
             color: var(--success-color);
         }
-        
+
         .status-pending {
             background-color: rgba(249, 199, 79, 0.1);
             color: var(--warning-color);
         }
-        
+
         /* Activity History */
         .activity-list {
             margin-top: 15px;
         }
-        
+
         .activity-item {
             display: flex;
             gap: 15px;
             padding: 15px 0;
             border-bottom: 1px solid #eee;
         }
-        
+
         .activity-icon {
             width: 40px;
             height: 40px;
@@ -275,21 +277,21 @@ $conn->close();
             justify-content: center;
             font-size: 1.2rem;
         }
-        
+
         .activity-content {
             flex: 1;
         }
-        
+
         .activity-title {
             font-weight: 500;
             margin-bottom: 5px;
         }
-        
+
         .activity-time {
             font-size: 0.8rem;
             color: var(--gray-color);
         }
-        
+
         /* Available Labs */
         .labs-grid {
             display: grid;
@@ -297,7 +299,7 @@ $conn->close();
             gap: 20px;
             margin-top: 30px;
         }
-        
+
         .lab-card {
             background-color: white;
             border-radius: 10px;
@@ -305,50 +307,50 @@ $conn->close();
             overflow: hidden;
             transition: all 0.3s ease;
         }
-        
+
         .lab-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
-        
+
         .lab-img {
             width: 100%;
             height: 150px;
             object-fit: cover;
         }
-        
+
         .lab-body {
             padding: 20px;
         }
-        
+
         .lab-title {
             font-size: 1.1rem;
             font-weight: 600;
             margin-bottom: 10px;
         }
-        
+
         .lab-info {
             display: flex;
             justify-content: space-between;
             margin-bottom: 15px;
         }
-        
+
         .info-item {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        
+
         .info-value {
             font-weight: 600;
             font-size: 1.1rem;
         }
-        
+
         .info-label {
             font-size: 0.8rem;
             color: var(--gray-color);
         }
-        
+
         .availability-bar {
             height: 8px;
             background-color: #eee;
@@ -356,69 +358,72 @@ $conn->close();
             margin-bottom: 10px;
             overflow: hidden;
         }
-        
+
         .availability-fill {
             height: 100%;
             background-color: var(--primary-color);
         }
-        
+
         .lab-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .availability-label {
             font-size: 0.8rem;
             color: var(--gray-color);
         }
-        
+
         /* Rules Section */
         .rules-card {
             margin-top: 30px;
         }
-        
+
         .rules-list {
             margin-top: 15px;
             list-style-position: inside;
         }
-        
+
         .rules-list li {
             padding: 10px 0;
             border-bottom: 1px solid #eee;
         }
-        
+
         /* Responsive */
         @media (max-width: 992px) {
             .sidebar {
                 width: 70px;
             }
-            
+
             .sidebar-header h2,
             .user-name,
             .user-role,
             .menu-item span {
                 display: none;
             }
-            
+
             .profile-img {
                 width: 40px;
                 height: 40px;
             }
-            
+
             .dashboard-grid,
             .labs-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        a, a:visited, a:hover, a:active {
+        a,
+        a:visited,
+        a:hover,
+        a:active {
             color: inherit !important;
             text-decoration: none !important;
         }
-
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
@@ -426,21 +431,21 @@ $conn->close();
             <div class="sidebar-header">
                 <h2>CCS Sit-in Monitoring System</h2>
             </div>
-            
+
             <div class="user-profile">
                 <img src="lofi.jpg" alt="Profile" class="profile-img">
                 <div class="user-name"><?php echo htmlspecialchars($user['shortname']) ?></div>
-                <div class="user-role">Student</div>
+                <div class="user-role"><?php echo htmlspecialchars($role) ?></div>
             </div>
-            
+
             <div class="sidebar-menu">
                 <div class="menu-item active">
                     <span>Dashboard</span>
                 </div>
-                <div class="menu-item" >
+                <div class="menu-item">
                     <span>Reservation</span>
                 </div>
-                <div class="menu-item" >
+                <div class="menu-item">
                     <span>Sit-in History</span>
                 </div>
                 <div class="menu-item" onclick="window.location.href='labrules.php'">
@@ -462,7 +467,7 @@ $conn->close();
                     <button class="btn btn-primary">Reserve a Seat</button>
                 </div>
             </div>
-            
+
             <!-- Dashboard Cards -->
             <div class="dashboard-grid">
                 <!-- Upcoming Reservation Card -->
@@ -502,7 +507,7 @@ $conn->close();
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Recent Activity Card -->
                 <div class="card">
                     <div class="card-header">
@@ -539,7 +544,7 @@ $conn->close();
                         <button class="btn" style="width: 100%; margin-top: 15px; background-color: #eee;">View All Activity</button>
                     </div>
                 </div>
-                
+
                 <!-- Usage Summary Card -->
                 <div class="card">
                     <div class="card-header">
@@ -557,7 +562,7 @@ $conn->close();
                                 <div style="font-size: 0.9rem; color: var(--gray-color);">Sessions</div>
                             </div>
                         </div>
-                        
+
                         <div style="margin-top: 20px;">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                                 <div style="font-weight: 500;">Monthly Limit (20 hrs)</div>
@@ -573,7 +578,7 @@ $conn->close();
                     </div>
                 </div>
             </div>
-            
+
             <!-- Available Labs Section -->
             <h2 style="margin-bottom: 20px; color: var(--dark-color);">Available Laboratories</h2>
             <div class="labs-grid">
@@ -604,7 +609,7 @@ $conn->close();
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="lab-card">
                     <img src="uclab2.jpg" alt="Computer Lab 2" class="lab-img">
                     <div class="lab-body">
@@ -632,7 +637,7 @@ $conn->close();
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="lab-card">
                     <img src="uclab3.jpg" alt="Computer Lab 3" class="lab-img">
                     <div class="lab-body">
@@ -664,4 +669,5 @@ $conn->close();
         </div>
     </div>
 </body>
+
 </html>
