@@ -15,7 +15,6 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: rgb(198, 156, 236);
     flex-direction: column;
     margin: 0;
 }

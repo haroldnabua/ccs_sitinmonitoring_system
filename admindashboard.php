@@ -306,8 +306,8 @@ $conn->close();
             <div class="nav-item active" onclick="window.location.href='admindashboard.php'">Dashboard</div>
             <div class="nav-item" onclick="window.location.href='adminannouncements.php'">Announcements</div>
             <div class="nav-item">View Feedback</div>
-            <div class="nav-item">Sit-in Records</div>
-            <div class="nav-item">Student List</div>
+            <div class="nav-item">Sit-in History</div>
+            <div class="nav-item">Students List</div>
             <div class="nav-item">Settings</div>
             <div class="nav-item">Logout</div>
         </div>
