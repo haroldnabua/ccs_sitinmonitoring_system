@@ -197,11 +197,6 @@
             color: var(--green);
         }
         
-        .status-idle {
-            background-color: rgba(255, 165, 0, 0.15);
-            color: var(--orange);
-        }
-        
         .status-offline {
             background-color: rgba(255, 99, 71, 0.15);
             color: var(--red);
@@ -257,10 +252,10 @@
         </div>
         <nav class="nav-menu">
             <a href="#" class="nav-item">Dashboard</a>
+            <a href="#" class="nav-item">Announcements</a>
             <a href="#" class="nav-item">View Feedback</a>
-            <a href="#" class="nav-item active">Students List</a>
             <a href="#" class="nav-item">Sit-in History</a>
-            <a href="#" class="nav-item">Settings</a>
+            <a href="#" class="nav-item">Students List</a>
             <a href="#" class="nav-item">Logout</a>
         </nav>
     </aside>
@@ -292,7 +287,6 @@
                 <select class="filter-select">
                     <option>All Status</option>
                     <option>Active</option>
-                    <option>Idle</option>
                     <option>Offline</option>
                 </select>
             </div>
@@ -350,7 +344,7 @@
                         <td>2nd</td>
                         <td>Today, 09:30 AM</td>
                         <td>15 hours</td>
-                        <td><span class="status status-idle">Idle</span></td>
+                        <td><span class="status status-offline">Offline</span></td>
                         <td>
                             <div class="action-btns">
                                 <button class="action-btn">View</button>
