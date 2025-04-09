@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize and validate form data
     $idno = isset($_POST["idno"]) ? mysqli_real_escape_string($conn, $_POST["idno"]) : '';
     $lastName = isset($_POST["lastName"]) ? mysqli_real_escape_string($conn, $_POST["lastName"]) : '';
-    $firstName = isset($_POST["firstName"]) ? mysqli_real_escape_string($conn, $_POST["firstName"]) : ''; 
+    $firstName = isset($_POST["firstName"]) ? mysqli_real_escape_string($conn, $_POST["firstName"]) : '';
     $midName = isset($_POST["midName"]) ? mysqli_real_escape_string($conn, $_POST["midName"]) : '';
     $course = isset($_POST["course"]) ? mysqli_real_escape_string($conn, $_POST["course"]) : '';
     $yearLevel = isset($_POST["yearLevel"]) ? mysqli_real_escape_string($conn, $_POST["yearLevel"]) : '';
@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $checkStmt->bind_param("ss", $email, $userName);
             $checkStmt->execute();
             $checkStmt->store_result();
-            
+
             if ($checkStmt->num_rows > 0) {
                 $response["message"] = "Email or username already exists.";
             } else {
@@ -39,11 +39,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
                 // Insert the new user into the database
-                $insertQuery = "INSERT INTO accounts(idno, lastName, firstName, midName, course, yearLevel, email, userName, password, remaining_session) 
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $insertQuery = "INSERT INTO accounts(idno, lastName, firstName, midName, course, role, yearLevel, email, userName, password, remaining_session) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
                 if ($stmt = $conn->prepare($insertQuery)) {
-                    $stmt->bind_param("issssisssi", $idno, $lastName, $firstName, $midName, $course, $yearLevel, $email, $userName, $hashedPassword, $remaining_session);
+                    $stmt->bind_param("isssssisssi", $idno, $lastName, $firstName, $midName, $course, 'Student', $yearLevel, $email, $userName, $hashedPassword, $remaining_session);
 
                     if ($stmt->execute()) {
                         $response["status"] = "success";
@@ -71,4 +71,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $conn->close();
-?>
