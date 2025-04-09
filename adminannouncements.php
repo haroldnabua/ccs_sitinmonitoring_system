@@ -360,7 +360,7 @@ $conn->close();
         <nav class="nav-menu">
             <a href="admindashboard.php" class="nav-item">Dashboard</a>
             <a href="#" class="nav-item">View Feedback</a>
-            <a href="#" class="nav-item">Students List</a>
+            <a href="studentlist.php" class="nav-item">Students List</a>
             <a href="#" class="nav-item">Sit-in History</a>
             <a href="adminannouncements.php" class="nav-item active">Announcements</a>
             <a href="#" class="nav-item">Logout</a>
