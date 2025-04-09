@@ -33,6 +33,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Sit-in Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root {
             --primary-color: #4361ee;
@@ -435,7 +436,31 @@ $conn->close();
                 <div class="user-name"><?php echo htmlspecialchars($user['shortname']) ?></div>
                 <div class="user-role"><?php echo htmlspecialchars($role) ?></div>
             </div>
-
+            <script>
+                function link2logout() {
+                    Swal.fire({
+                        title: 'Logout',
+                        text: 'Are you sure you want to log out?',
+                        icon: 'question',
+                        confirmButtonText: 'Yes, logout',
+                        showCancelButton: true,
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                text: 'You will be logout immediately.',
+                                timer: 1300,
+                                timerProgressBar: true,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            }).then(() => {
+                                window.location.href = 'logout.php';
+                            });
+                        }
+                    });
+                }
+            </script>
             <div class="sidebar-menu">
                 <div class="menu-item active">
                     <span>Dashboard</span>
@@ -452,7 +477,7 @@ $conn->close();
                 <div class="menu-item" onclick="window.location.href='editprofile.html'">
                     <span><a>Edit Profile</a></span>
                 </div>
-                <div class="menu-item" onclick="window.location.href='logout.php'">
+                <div class="menu-item" onclick="link2logout()">
                     <span>Logout</span>
                 </div>
             </div>
