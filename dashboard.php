@@ -443,7 +443,7 @@ $conn->close();
                 <div class="menu-item" >
                     <span>Sit-in History</span>
                 </div>
-                <div class="menu-item" onclick="window.location.href='labrules.html'">
+                <div class="menu-item" onclick="window.location.href='labrules.php'">
                     <span><a>Lab Rules/Sit-in Rules</a></span>
                 </div>
                 <div class="menu-item" onclick="window.location.href='editprofile.html'">

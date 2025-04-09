@@ -1,31 +1,26 @@
 <?php
 include("connection.php");
-header('Content-Type: application/json');
 
+// Fetch data from the database
 $query = "SELECT * FROM labs";
 $result = $conn->query($query);
 
-/*what the hell is this*/
 $labs = [];
 while ($row = $result->fetch_assoc()) {
     $labs[] = $row;
 }
 
-echo json_encode(["status" => "success", "labs" => $labs]);
 $conn->close();
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCS Sit-in Monitoring System</title>
+    <title>Lab Rules</title>
     <link rel="stylesheet" href="css/labrules.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 </head>
 <body>
     <div class="container">
@@ -74,7 +69,7 @@ $conn->close();
                 </div>
                 <div class="card-body">
                     <ul class="rules-list">
-                        <li>Reservations must be made at least 24 hours in advance.</li>
+                    <li>Reservations must be made at least 24 hours in advance.</li>
                         <li>Maximum session duration is 3 hours per day.</li>
                         <li>Monthly limit of 20 hours per student.</li>
                         <li>Please arrive on time. Your reservation will be cancelled if you're more than 15 minutes late.</li>
@@ -82,6 +77,13 @@ $conn->close();
                         <li>Installing software without permission is prohibited.</li>
                         <li>Be respectful of other users by keeping noise to a minimum.</li>
                         <li>Report any technical issues to the lab administrator immediately.</li>
+                    </ul>
+                        <?php 
+                            // Loop through the $labs array and display the lab rules dynamically
+                            foreach ($labs as $lab) {
+                                echo "<li>" . htmlspecialchars($lab['rule']) . "</li>"; // Assuming 'rule' is the column name containing the rules in the database
+                            }
+                        ?>
                     </ul>
                 </div>
             </div>
