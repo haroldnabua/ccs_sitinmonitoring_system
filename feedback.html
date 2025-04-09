@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCS Sit-in Monitoring System - View Feedback</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+        }
+        
+        .sidebar {
+            width: 180px;
+            background-color: #3f51b5;
+            color: white;
+            padding: 20px 0;
+            height: 100vh;
+            position: fixed;
+        }
+        
+        .logo {
+            text-align: center;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .profile {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 10px;
+            color: #3f51b5;
+            font-weight: bold;
+        }
+        
+        .menu {
+            list-style: none;
+        }
+        
+        .menu li {
+            padding: 12px 20px;
+            cursor: pointer;
+        }
+        
+        .menu li.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .content {
+            margin-left: 180px;
+            padding: 20px;
+            width: calc(100% - 180px);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .generate-btn {
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .feedback-list {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .feedback-item {
+            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+            padding-bottom: 15px;
+        }
+        
+        .feedback-item:last-child {
+            border-bottom: none;
+        }
+        
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .student-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        
+        .feedback-meta {
+            text-align: right;
+        }
+        
+        .feedback-date {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .feedback-content {
+            margin-bottom: 10px;
+            line-height: 1.5;
+            padding-bottom: 15px;
+        }
+        
+        .rating {
+            color: #f59e0b;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            CCS Sit-in Monitoring System
+        </div>
+        <div class="profile">
+            <div class="profile-pic">Admin</div>
+            <div class="profile-name">Harold Nabua</div>
+            <div class="profile-role">System Administrator</div>
+        </div>
+        <ul class="menu">
+            <li>Dashboard</li>
+            <li>Announcements</li>
+            <li class="active">View Feedback</li>
+            <li>Sit-in History</li>
+            <li>Students List</li>
+            <li>Logout</li>
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="header">
+            <h1>View Feedback</h1>
+        </div>
+        
+        <div class="feedback-list">
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <div class="student-info">
+                        <div class="student-avatar">A</div>
+                        <div>
+                            <div><strong>Harold Nabua</strong></div>
+                            <div style="font-size: 14px; color: #666;">2021-0015</div>
+                        </div>
+                    </div>
+                    <div class="feedback-meta">
+                        <div class="feedback-date">April 9, 2025 - 10:45 AM</div>
+                    </div>
+                </div>
+                <div class="feedback-content">
+                    Walay internet ang PC 35. Wala ko nakapass sa akong assignment nga last minute. GG.
+                </div>
+            </div>
+            
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <div class="student-info">
+                        <div class="student-avatar">M</div>
+                        <div>
+                            <div><strong>Jerson Sullano</strong></div>
+                            <div style="font-size: 14px; color: #666;">2022-0047</div>
+                        </div>
+                    </div>
+                    <div class="feedback-meta">
+                        <div class="feedback-date">April 8, 2025 - 3:20 PM</div>
+                    </div>
+                </div>
+                <div class="feedback-content">
+                   Pirmi sig gawas2 ang working, magpa login unta ko sa admin para sa XAMPP.
+                </div>
+            </div>
+            
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <div class="student-info">
+                        <div class="student-avatar">B</div>
+                        <div>
+                            <div><strong>Poland Diosana</strong></div>
+                            <div style="font-size: 14px; color: #666;">2021-0001</div>
+                        </div>
+                    </div>
+                    <div class="feedback-meta">
+                        <div class="feedback-date">April 8, 2025 - 1:15 PM</div>
+                    </div>
+                </div>
+                <div class="feedback-content">
+                    Goods, pero naa koy question. Pwede raba maka charge ug laptop if wala gamita ang PC?
+                </div>
+            </div>
+            
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <div class="student-info">
+                        <div class="student-avatar">D</div>
+                        <div>
+                            <div><strong>Clifford Alferez</strong></div>
+                            <div style="font-size: 14px; color: #666;">2020-0123</div>
+                        </div>
+                    </div>
+                    <div class="feedback-meta">
+                        <div class="feedback-date">April 7, 2025 - 4:50 PM</div>
+                    </div>
+                </div>
+                <div class="rating">★★★★☆</div>
+                <div class="feedback-content">
+                    Ga sigeg leak ang aircon duol sa PC. Hope ma actionan dayun.
+                </div>
+            </div>
+            
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <div class="student-info">
+                        <div class="student-avatar">S</div>
+                        <div>
+                            <div><strong>Anthony Cutamora</strong></div>
+                            <div style="font-size: 14px; color: #666;">2021-0078</div>
+                        </div>
+                    </div>
+                    <div class="feedback-meta">
+                        <div class="feedback-date">April 6, 2025 - 9:30 AM</div>
+                    </div>
+                </div>
+                <div class="rating">★★★★★</div>
+                <div class="feedback-content">
+                   10/10. Grabe ka tugnaw.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
