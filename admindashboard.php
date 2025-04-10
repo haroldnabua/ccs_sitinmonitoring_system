@@ -32,6 +32,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CCS Sit-in Monitoring System - Admin Dashboard</title>
+    <link rel="stylesheet" href="sidebar.css">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -41,64 +42,6 @@ $conn->close();
             height: 100vh;
             background-color: #f5f5f5;
         }
-
-        .sidebar {
-            width: 220px;
-            background-color: #2e32a8;
-            color: white;
-            padding: 20px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .sidebar-header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding: 0 10px;
-        }
-
-        .profile {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .profile-pic {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 3px solid white;
-            overflow: hidden;
-        }
-
-        .profile-name {
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        .profile-role {
-            font-size: 0.8rem;
-            opacity: 0.9;
-        }
-
-        .nav-menu {
-            width: 100%;
-        }
-
-        .nav-item {
-            padding: 12px 20px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .nav-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-item.active {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
         .main-content {
             flex: 1;
             padding: 20px;
@@ -294,21 +237,22 @@ $conn->close();
             <h2>CCS Sit-in Monitoring System</h2>
         </div>
 
-        <div class="profile">
-            <div class="profile-pic">
-                <img src="lofi.jpg" width="80px" height="80px" border-radius="50%" object-fit="cover" margin-bottom="10px">
+        <div class="user-profile">
+            <div class="profile-img">
+                <img src="lofi.jpg" alt="Avatar">
             </div>
-            <div class="profile-name"><?php echo htmlspecialchars($user['shortname']) ?></div>
-            <div class="profile-role">Admin</div>
+            <div class="user-name"><?php echo htmlspecialchars($user['shortname']) ?></div>
+            <div class="user-role">Admin</div>
         </div>
 
-        <div class="nav-menu">
-            <div class="nav-item active" onclick="window.location.href='admindashboard.php'">Dashboard</div>
-            <div class="nav-item" onclick="window.location.href='adminannouncements.php'">Announcements</div>
-            <div class="nav-item">View Feedback</div>
-            <div class="nav-item">Sit-in Records</div>
-            <div class="nav-item" onclick="window.location.href='studentlist.php'">Student List</div>
-            <div class="nav-item">Logout</div>
+        <div class="sidebar-menu">
+            <div class="menu-item active" onclick="window.location.href='admindashboard.php'">Dashboard</div>
+            <div class="menu-item" onclick="window.location.href='adminannouncements.php'">Announcements</div>
+            <div class="menu-item">View Feedback</div>
+            <div class="menu-item">Sit-in History</div>
+            <div class="menu-item">Students List</div>
+            <div class="menu-item">Settings</div>
+            <div class="menu-item">Logout</div>
         </div>
     </div>
 

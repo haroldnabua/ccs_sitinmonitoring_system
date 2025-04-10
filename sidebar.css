@@ -1,0 +1,64 @@
+.sidebar {
+    width: 250px;
+    background-color: rgb(36, 38, 158);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.user-profile {
+    padding: 20px;
+    text-align: center;
+}
+
+.profile-img img{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 3px solid white;
+}
+
+.user-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.user-role {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.sidebar-menu {
+    padding: 20px 0;
+}
+
+.menu-item {
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: rgb(247, 247, 247);
+}
+
+.menu-item:hover {
+    background-color: var(--hover-color);
+}
+
+.menu-item.active {
+    background-color: rgb(6, 1, 83);
+    border-left: 4px solid white;
+}
