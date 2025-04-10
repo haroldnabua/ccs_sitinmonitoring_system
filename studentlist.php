@@ -110,7 +110,6 @@ $conn->close();
         }
 
         .main-content {
-            margin-left: 220px;
             flex: 1;
             padding: 20px;
         }
