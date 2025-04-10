@@ -1,86 +1,10 @@
-<?php
-session_start();
-include("connection.php");
-
-if (!isset($_SESSION['idno'])) {
-    echo "ERROR";
-    exit;
-}
-
-$idno = $_SESSION['idno'];
-$role = $_SESSION['role'];
-
-$query = "SELECT *, CONCAT(lastName, ' ', midName, ' ', firstName) AS fullname, CONCAT(firstName, ' ', lastName) AS shortname FROM accounts WHERE idno = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("i", $idno);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    $user = $result->fetch_assoc();
-} else {
-    echo "<script>alert('No Users Found.')</script>";
-    exit();
-}
-
-$search = isset($_GET['search']) ? $_GET['search'] : '';
-$program_filter = isset($_GET['program']) ? $_GET['program'] : 'All Programs';
-$year_filter = isset($_GET['year']) ? $_GET['year'] : 'All Years';
-
-$queryStudentList = "SELECT *, CONCAT(firstName, ' ', lastName) AS shortname, course,
-                     CASE 
-                        WHEN course = 'BSIT' THEN 'BS Information Technology'
-                        WHEN course = 'BSCS' THEN 'BS Computer Science'
-                        ELSE course
-                     END AS course_fullname, yearLevel,
-                     CASE
-                        WHEN yearLevel = 1 THEN '1st'
-                        WHEN yearLevel = 2 THEN '2nd'
-                        WHEN yearLevel = 3 THEN '3rd'
-                        WHEN yearLevel = 4 THEN '4th'
-                        ELSE yearLevel
-                     END AS year_full
-                     FROM accounts
-                     WHERE role = 'Student'
-                     ";
-
-if (!empty($search)) {
-    $queryStudentList .= " AND (idno LIKE '%$search%' OR firstName LIKE '%$search%' OR lastName LIKE '%$search%' OR CONCAT(firstName, ' ', lastName) LIKE '%$search%')";
-}
-
-if ($program_filter !== 'All Programs') {
-    if ($program_filter === 'BS Information Technology') {
-        $queryStudentList .= " AND course = 'BSIT'";
-    } else if ($program_filter === 'BS Computer Science') {
-        $queryStudentList .= " AND course = 'BSCS'";
-    } else {
-        $queryStudentList .= " AND course = '$program_filter'";
-    }
-}
-
-if ($year_filter !== 'All Years') {
-    if ($year_filter === '1st Year') {
-        $queryStudentList .= " AND yearLevel = 1";
-    } else if ($year_filter === '2nd Year') {
-        $queryStudentList .= " AND yearLevel = 2";
-    } else if ($year_filter === '3rd Year') {
-        $queryStudentList .= " AND yearLevel = 3";
-    } else if ($year_filter === '4th Year') {
-        $queryStudentList .= " AND yearLevel = 4";
-    }
-}
-
-$student = mysqli_query($conn, $queryStudentList);
-
-$conn->close();
-?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCS Sit-in Monitoring System - Student List</title>
+    <title>CCS Sit-in Monitoring System - Current Sit-In</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="sidebar.css">
     <style>
@@ -232,11 +156,12 @@ $conn->close();
             border-radius: 4px;
             cursor: pointer;
             border: none;
-            background-color: #f5f5f5;
+            background-color: #db6060;
+            color: white;
         }
 
         .action-btn:hover {
-            background-color: #e0e0e0;
+            background-color: #a02323;
         }
 
         .pagination {
@@ -277,9 +202,9 @@ $conn->close();
             <div class="menu-item" onclick="window.location.href='admindashboard.php'">Dashboard</div>
             <div class="menu-item" onclick="window.location.href='adminannouncements.php'">Announcements</div>
             <div class="menu-item">View Feedback</div>
-            <div class="menu-item">Current Sit-in</div>
+            <div class="menu-item active">Current Sit-in</div>
             <div class="menu-item" onclick="window.location.href='sitinhistoryadmin.php'">Sit-in History</div>
-            <div class="menu-item active">Students List</div>
+            <div class="menu-item">Students List</div>
             <div class="menu-item">Logout</div>
         </div>
     </div>
@@ -287,34 +212,27 @@ $conn->close();
 
     <main class="main-content">
         <div class="header">
-            <h1>Students List</h1>
-            <button class="btn">Add New Student</button>
+            <h1>Current Sit-in</h1>
         </div>
 
-        <form id="filterForm" method="GET" action="studentlist.php">
+        <form id="filterForm" method="GET" action="currentsitin.php">
             <div class="search-filter-container">
                 <div class="search-box">
-                    <input type="text" name="search" id="searchInput" placeholder="Search students by ID or name" value="<?php echo htmlspecialchars($search); ?>">
+                    <input type="text" name="search" id="searchInput" placeholder="Search students by ID or name">
                 </div>
                 <div class="filter-group">
                     <select class="filter-select" name="program" id="programFilter">
-                        <option value="All Programs" <?php if ($program_filter == 'All Programs') echo 'selected'; ?>>All Programs</option>
-                        <option value="BS Computer Science" <?php if ($program_filter == 'BS Computer Science') echo 'selected'; ?>>BS Computer Science</option>
-                        <option value="BS Information Technology" <?php if ($program_filter == 'BS Information Technology') echo 'selected'; ?>>BS Information Technology</option>
-                        <option value="BS Information Systems" <?php if ($program_filter == 'BS Information Systems') echo 'selected'; ?>>BS Information Systems</option>
+                        <option value="All Programs">All Programs</option>
+                        <option value="BS Computer Science">BS Computer Science</option>
+                        <option value="BS Information Technology">BS Information Technology</option>
+                        <option value="BS Information Systems">BS Information Systems</option>
                     </select>
                     <select class="filter-select" name="year" id="yearFilter">
-                        <option value="All Years" <?php if ($year_filter == 'All Years') echo 'selected'; ?>>All Years</option>
-                        <option value="1st Year" <?php if ($year_filter == '1st Year') echo 'selected'; ?>>1st Year</option>
-                        <option value="2nd Year" <?php if ($year_filter == '2nd Year') echo 'selected'; ?>>2nd Year</option>
-                        <option value="3rd Year" <?php if ($year_filter == '3rd Year') echo 'selected'; ?>>3rd Year</option>
-                        <option value="4th Year" <?php if ($year_filter == '4th Year') echo 'selected'; ?>>4th Year</option>
-                    </select>
-                    <select class="filter-select" name="status">
-                        <option>All Status</option>
-                        <option>Active</option>
-                        <option>Idle</option>
-                        <option>Offline</option>
+                        <option value="All Year Level">All Year Level</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
                     </select>
                 </div>
             </div>
@@ -326,7 +244,7 @@ $conn->close();
                     <tr>
                         <th>Student ID</th>
                         <th>Name</th>
-                        <th>Program</th>
+                        <th>Course</th>
                         <th>Year</th>
                         <th>Last Access</th>
                         <th>Session</th>
@@ -335,30 +253,20 @@ $conn->close();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (mysqli_num_rows($student) > 0): ?>
-                        <?php while ($row = mysqli_fetch_assoc($student)): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($row['idno']); ?></td>
-                                <td><?php echo htmlspecialchars($row['shortname']); ?></td>
-                                <td><?php echo htmlspecialchars($row['course_fullname']); ?></td>
-                                <td><?php echo htmlspecialchars($row['year_full']); ?></td>
-                                <td>Today, 10:35 AM</td>
-                                <td><?php echo htmlspecialchars($row['remaining_session']) ?></td>
+                                <td>22606842</td>
+                                <td>Harold Nabua</td>
+                                <td>BSIT</td>
+                                <td>3</td>
+                                <td>April 20, 2025</td>
+                                <td>20:30</td>
                                 <td><span class="status status-active">Active</span></td>
                                 <td>
                                     <div class="action-btns">
-                                        <button class="action-btn">Edit</button>
-                                        <button class="action-btn" onclick="deleteStudent('<?php echo htmlspecialchars($row['idno']); ?>')">Delete</button>
-                                        <button class="action-btn" onclick="resetStudentSession('<?php echo htmlspecialchars($row['idno']); ?>')">Reset Session</button>
+                                        <button class="action-btn">Log-out Session</button>
                                     </div>
                                 </td>
                             </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <tr>
-                            <td colspan="8">No student records found.</td>
-                        </tr>
-                    <?php endif; ?>
                 </tbody>
             </table>
 

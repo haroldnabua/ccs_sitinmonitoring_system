@@ -108,6 +108,27 @@ $conn->close();
             padding: 20px;
         }
 
+        .search-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-filters input, .search-filters select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        .search-filters button {
+            padding: 8px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -188,7 +209,6 @@ $conn->close();
             <div class="menu-item">View Feedback</div>
             <div class="menu-item active" onclick="window.location.href='sitinhistoryadmin.php'">Sit-in History</div>
             <div class="menu-item" onclick="window.location.href='studentlist.php'">Students List</div>
-            <div class="menu-item">Settings</div>
             <div class="menu-item" onclick="window.location.href='logout.php'">Logout</div>
         </div>
     </div>
@@ -200,6 +220,29 @@ $conn->close();
         </div>
 
         <div class="card">
+        <div class="card">
+            <div class="card-header">
+                Search & Filters
+            </div>
+            <div class="card-body">
+                <div class="search-filters">
+                    <input type="text" placeholder="Search by ID or Name">
+                    <select>
+                        <option value="">All Laboratories</option>
+                        <option value="lab1">Computer Lab 1</option>
+                        <option value="lab2">Computer Lab 2</option>
+                        <option value="lab3">Computer Lab 3</option>
+                    </select>
+                    <select>
+                        <option value="">Purpose</option>
+                        <option value="lab1">Java Programming</option>
+                        <option value="lab2">Microsoft Word</option>
+                        <option value="lab3">C++ Programming</option>
+                    </select>
+                    <button>Apply</button>
+                </div>
+            </div>
+        </div>
         </div>
 
         <div class="card">

@@ -1,6 +1,6 @@
 <?php
 
-$db_server = '127.0.0.1:3307';
+$db_server = '127.0.0.1:3306';
 $db_user = 'root';
 $db_pass = "";
 $db_name = 'nabuadb';
