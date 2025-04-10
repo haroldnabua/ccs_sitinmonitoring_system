@@ -61,7 +61,8 @@ $conn->close();
         }
 
         .main-content {
-            margin-left: 220px;
+            margin-left: 30px;
+            margin-right: 30px;
             flex: 1;
             padding: 20px;
         }

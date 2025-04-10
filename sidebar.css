@@ -3,6 +3,8 @@
     background-color: rgb(36, 38, 158);
     color: white;
     transition: all 0.3s ease;
+    height: 100vh;
+    overflow: auto;
 }
 
 .sidebar-header {
