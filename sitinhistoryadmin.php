@@ -212,7 +212,7 @@ $conn->close();
         <div class="sidebar-menu">
             <div class="menu-item" onclick="window.location.href='admindashboard.php'">Dashboard</div>
             <div class="menu-item" onclick="window.location.href='adminannouncements.php'">Announcements</div>
-            <div class="menu-item">View Feedback</div>
+            <div class="menu-item" onclick="window.location.hfref='adminfeedback.html'">View Feedback</div>
             <div class="menu-item" onclick="window.location.href='currentsitin.php'">Current Sit-In</div>
             <div class="menu-item active" onclick="window.location.href='sitinhistoryadmin.php'">Sit-in History</div>
             <div class="menu-item" onclick="window.location.href='studentlist.php'">Students List</div>
@@ -231,6 +231,7 @@ $conn->close();
             </select>
             <button class="action-button">Export Data</button>
         </div>
+
         <script>
             document.querySelector('.action-button').addEventListener('click', () => {
                 const format = document.getElementById('formatType').value;
@@ -300,6 +301,7 @@ $conn->close();
                 }
             });
         </script>
+
         <div class="card">
             <div class="card">
                 <div class="card-header">

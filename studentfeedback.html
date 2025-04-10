@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CCS Sit-In Monitoring System</title>
+    <link rel="stylesheet" href="sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .menu {
+            list-style: none;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            padding: 10px 20px;
+            background-color: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h2 {
+            font-size: 20px;
+            font-weight: normal;
+        }
+        
+        .feedback-list {
+            margin-top: 20px;
+        }
+        
+        .feedback-item {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-initial {
+            width: 35px;
+            height: 35px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .user-name {
+            font-weight: bold;
+        }
+        
+        .user-id {
+            font-size: 12px;
+            color: #777;
+        }
+        
+        .feedback-date {
+            color: #777;
+            font-size: 14px;
+        }
+        
+        .feedback-text {
+            margin-top: 5px;
+            color: #333;
+        }
+        
+        .rating {
+            color: #ffc107;
+            margin-top: 5px;
+        }
+        
+        .submit-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #1e2b8d;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .submit-btn:hover {
+            background-color: #2a3ca3;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .feedback-form label {
+            display: block;
+            margin: 15px 0 5px;
+            font-weight: bold;
+        }
+        
+        .feedback-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            height: 120px;
+            resize: vertical;
+        }
+        
+        .rating-select {
+            margin-top: 5px;
+        }
+        
+        .star {
+            font-size: 24px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .star.active {
+            color: #ffc107;
+        }
+        
+        .submit-form-btn {
+            background-color: #1e2b8d;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        .submit-form-btn:hover {
+            background-color: #2a3ca3;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>CCS Sit-in Monitoring System</h2>
+        </div>
+        <div class="user-profile">
+            <div class="profile-img">
+                <img src="lofi.jpg" alt="Avatar">
+            </div>
+            <div class="user-name"><?php echo htmlspecialchars($user['shortname']) ?></div>
+            <div class="user-role">Admin</div>
+        </div>
+
+        <div class="sidebar-menu">
+            <div class="menu-item" onclick="window.location.href='dashboard.php'">Dashboard</div>
+            <div class="menu-item" onclick="window.location.href='announcements.php'">Announcements</div>
+            <div class="menu-item" onclick="window.location.href='labrules.html'">Lab Rules/Sit-in Rules</div>
+            <div class="menu-item" onclick="window.location.href='studentfeedback.php'">Feedback</div>
+            <div class="menu-item" onclick="window.location.href='studenthistory.php'">Sit-in History</div>
+            <div class="menu-item" onclick="window.location.href='editprofile.php'">Edit Profile</div>
+            <div class="menu-item" onclick="window.location.href='logout.php'">Logout</div>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="header">
+            <h2>Student Feedback</h2>
+        </div>
+        
+        <div class="feedback-list">
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <div class="user-info">
+                        <div class="user-initial">A</div>
+                        <div>
+                            <div class="user-name">Harold Nabua</div>
+                            <div class="user-id">2021-0315</div>
+                        </div>
+                    </div>
+                    <div class="feedback-date">April 9, 2025 - 10:45 AM</div>
+                </div>
+                <div class="feedback-text">
+                    Walay internet ang PC 35. Wala ko nakapass sa akong assignment nga last minute. GG.
+                </div>
+            </div>
+            
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <div class="user-info">
+                        <div class="user-initial">M</div>
+                        <div>
+                            <div class="user-name">Jerson Sullano</div>
+                            <div class="user-id">2022-0047</div>
+                        </div>
+                    </div>
+                    <div class="feedback-date">April 8, 2025 - 3:20 PM</div>
+                </div>
+                <div class="feedback-text">
+                    Pirmi sig gawas2 ang working, magpa login unta ko sa admin para sa XAMPP.
+                </div>
+            </div>
+            
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <div class="user-info">
+                        <div class="user-initial">B</div>
+                        <div>
+                            <div class="user-name">Poland Diosana</div>
+                            <div class="user-id">2021-0041</div>
+                        </div>
+                    </div>
+                    <div class="feedback-date">April 8, 2025 - 1:15 PM</div>
+                </div>
+                <div class="feedback-text">
+                    Goods, pero naa koy question. Pwede raba maka charge ug laptop if wala gamita ang PC?
+                </div>
+            </div>
+            
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <div class="user-info">
+                        <div class="user-initial">D</div>
+                        <div>
+                            <div class="user-name">Clifford Alferez</div>
+                            <div class="user-id">2020-0123</div>
+                        </div>
+                    </div>
+                    <div class="feedback-date">April 7, 2025 - 4:50 PM</div>
+                </div>
+
+                <div class="feedback-text">
+                    Ga sigeg leak ang aircon duol sa PC. Hope ma actionan dayun.
+                </div>
+            </div>
+            
+            <div class="feedback-item">
+                <div class="feedback-header">
+                    <div class="user-info">
+                        <div class="user-initial">S</div>
+                        <div>
+                            <div class="user-name">Anthony Cutamora</div>
+                            <div class="user-id">2021-0378</div>
+                        </div>
+                    </div>
+                    <div class="feedback-date">April 6, 2025 - 9:30 AM</div>
+                </div>
+                <div class="feedback-text">
+                    10/10. Grabe ka tugnaw.
+                </div>
+            </div>
+        </div>
+        
+        <button class="submit-btn" onclick="openModal()">Submit Feedback</button>
+    </div>
+    
+    <!-- Modal for Submitting Feedback -->
+    <div class="modal" id="feedbackModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Submit Your Feedback</h3>
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+            </div>
+            <form class="feedback-form">
+                <div>
+                    <label for="feedback">Your Feedback:</label>
+                    <textarea id="feedback" placeholder="Share your experience or concerns..."></textarea>
+                </div>
+                
+                <button type="button" class="submit-form-btn" onclick="submitFeedback()">Submit</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Modal functions
+        function openModal() {
+            document.getElementById('feedbackModal').style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('feedbackModal').style.display = 'none';
+        }
+        
+        // Close modal if clicked outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('feedbackModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+        
+        // Submit feedback function
+        function submitFeedback() {
+            const studentId = document.getElementById('studentId').value;
+            const feedbackText = document.getElementById('feedback').value;
+            
+            if (!studentId || !feedbackText) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // This would typically be an AJAX call to your backend
+            alert('Thank you for your feedback!');
+            closeModal();
+            
+            // Reset form
+            document.getElementById('studentId').value = '';
+            document.getElementById('feedback').value = '';
+            setRating(0);
+        }
+    </script>
+</body>
+</html>
