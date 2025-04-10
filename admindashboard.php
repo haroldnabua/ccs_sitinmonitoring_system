@@ -259,8 +259,7 @@ $conn->close();
     <div class="main-content">
         <div class="header">
             <h1>Admin Dashboard</h1>
-            <button class="btn">Generate Reports</button>
-            <button class="btn" onclick="openModal()">Sit-in</button>
+
             <script>
                 function openModal() {
                     document.getElementById("reserveModal").style.display = "block";
@@ -271,7 +270,33 @@ $conn->close();
                     document.getElementById("reserveModal").style.display = "none";
                     document.body.classList.remove("modal-active"); // Remove blur effect
                 }
+                function triggerSearch() {
+                    var id = document.getElementById('search-id').value; // Get the entered ID number
+                    if (id) {
+                        openModal(id); // Trigger the modal if an ID number is entered
+                    } else {
+                        alert('Please enter an ID number.'); // Show an alert if the input is empty
+                    }
+                }
+
+                function openModal(id) {
+                    document.getElementById('idNumber').value = id; // Populate the ID number field in the modal
+                    document.getElementById("reserveModal").style.display = "block";
+                    document.getElementById("pageContent").classList.add("modal-active"); // Add blur effect
+                }
+
+                function closeModal() {
+                    document.getElementById("reserveModal").style.display = "none";
+                    document.getElementById("pageContent").classList.remove("modal-active"); // Remove blur effect
+                }
+
             </script>
+
+
+        <div class="search-container">
+                        <input type="text" id="search-id" placeholder="Enter ID Number">
+                        <button onclick="triggerSearch()">Search</button>
+                    </div>
             <div id="reserveModal" class="modal">
                 <div class="modal-content">
                     <span class="close-btn" onclick="closeModal()">&times;</span>
