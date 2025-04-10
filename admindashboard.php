@@ -251,7 +251,6 @@ $conn->close();
             <div class="menu-item">View Feedback</div>
             <div class="menu-item">Sit-in History</div>
             <div class="menu-item" onclick="window.location.href='studentlist.php'">Students List</div>
-            <div class="menu-item">Settings</div>
             <div class="menu-item">Logout</div>
         </div>
     </div>
@@ -260,6 +259,48 @@ $conn->close();
         <div class="header">
             <h1>Admin Dashboard</h1>
             <button class="btn">Generate Reports</button>
+            <button class="btn" onclick="openModal()">Sit-in</button>
+            <script>
+               function openModal() {
+                        document.getElementById("reserveModal").style.display = "block";
+                        document.body.classList.add("modal-active"); // Add blur effect
+                    }
+
+                    function closeModal() {
+                        document.getElementById("reserveModal").style.display = "none";
+                        document.body.classList.remove("modal-active"); // Remove blur effect
+                    }
+
+            </script>
+            <div id="reserveModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>Sit-in Form</h2>
+            <form>
+                <label for="idNumber">ID Number:</label>
+                <input type="text" id="idNumber" name="idNumber" required><br><br>
+
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required><br><br>
+
+                <label for="purpose">Purpose:</label>
+                <select id="purpose" name="purpose">
+                    <option value="study">Study</option>
+                    <option value="experiment">Experiment</option>
+                    <option value="other">Other</option>
+                </select><br><br>
+
+                <label for="labRoom">Laboratory Room:</label>
+                <select id="labRoom" name="labRoom">
+                    <option value="room1">530</option>
+                    <option value="room2">526</option>
+                    <option value="room3">544</option>
+                    <option value="room3">524</option>
+                </select><br><br>
+                <button type="submit">Confirm</button>
+            </form>
+        </div>
+    </div>
         </div>
 
         <div class="card-container">

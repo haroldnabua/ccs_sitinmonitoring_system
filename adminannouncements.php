@@ -306,7 +306,6 @@ $conn->close();
             <div class="menu-item">View Feedback</div>
             <div class="menu-item">Sit-in History</div>
             <div class="menu-item" onclick="window.location.href='studentlist.php'">Students List</div>
-            <div class="menu-item">Settings</div>
             <div class="menu-item">Logout</div>
         </div>
     </div>
