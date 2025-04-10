@@ -180,6 +180,57 @@ $conn->close();
             background-color: #fff3e0;
             color: var(--warning);
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-btn {
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .feedback-form label {
+            display: block;
+            margin: 15px 0 5px;
+            font-weight: bold;
+        }
+        
+        .feedback-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            height: 120px;
+            resize: vertical;
+        }
+
+
     </style>
 </head>
 
@@ -258,6 +309,62 @@ $conn->close();
                                     <td><?php echo htmlspecialchars($record['time_in']); ?></td>
                                     <td><?php echo htmlspecialchars($record['time_out']); ?></td>
                                     <td><button onclick="">Submit Feedback</button></td>
+                                    
+                <div class="modal" id="feedbackModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Submit Your Feedback</h3>
+                            <span class="close-btn" onclick="closeModal()">&times;</span>
+                        </div>
+                        <form class="feedback-form">
+                            <div>
+                                <label for="feedback">Your Feedback:</label>
+                                <textarea id="feedback" placeholder="Share your experience or concerns..."></textarea>
+                            </div>
+                            
+                            <button type="button" class="submit-form-btn" onclick="submitFeedback()">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <script>
+                    // Modal functions
+                    function openModal() {
+                        document.getElementById('feedbackModal').style.display = 'flex';
+                    }
+                    
+                    function closeModal() {
+                        document.getElementById('feedbackModal').style.display = 'none';
+                    }
+                    
+                    // Close modal if clicked outside
+                    window.onclick = function(event) {
+                        const modal = document.getElementById('feedbackModal');
+                        if (event.target === modal) {
+                            closeModal();
+                        }
+                    }
+                    
+                    // Submit feedback function
+                    function submitFeedback() {
+                        const studentId = document.getElementById('studentId').value;
+                        const feedbackText = document.getElementById('feedback').value;
+                        
+                        if (!studentId || !feedbackText) {
+                            alert('Please fill in all required fields.');
+                            return;
+                        }
+                        
+                        // This would typically be an AJAX call to your backend
+                        alert('Thank you for your feedback!');
+                        closeModal();
+                        
+                        // Reset form
+                        document.getElementById('studentId').value = '';
+                        document.getElementById('feedback').value = '';
+                        setRating(0);
+                    }
+                </script>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
