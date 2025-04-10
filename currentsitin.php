@@ -1,3 +1,33 @@
+<?php
+session_start();
+include("connection.php");
+
+if (!isset($_SESSION['idno'])) {
+    echo "ERROR";
+    exit;
+}
+
+$idno = $_SESSION['idno'];
+$role = $_SESSION['role'];
+
+$query = "SELECT *, CONCAT(lastName, ' ', midName, ' ', firstName) AS fullname, CONCAT(firstName, ' ', lastName) AS shortname FROM accounts WHERE idno = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $idno);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+} else {
+    echo "<script>alert('No Users Found.')</script>";
+    exit();
+}
+
+$sitinquery = "SELECT * FROM sit_in WHERE time_out IS NULL ORDER BY time_out DESC";
+$resultSitin = mysqli_query($conn, $sitinquery);
+
+$conn->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -187,7 +217,7 @@
 </head>
 
 <body>
-<div class="sidebar">
+    <div class="sidebar">
         <div class="sidebar-header">
             <h2>CCS Sit-in Monitoring System</h2>
         </div>
@@ -198,14 +228,14 @@
             <div class="user-name"><?php echo htmlspecialchars($user['shortname']) ?></div>
             <div class="user-role">Admin</div>
         </div>
-       <div class="sidebar-menu">
+        <div class="sidebar-menu">
             <div class="menu-item" onclick="window.location.href='admindashboard.php'">Dashboard</div>
             <div class="menu-item" onclick="window.location.href='adminannouncements.php'">Announcements</div>
             <div class="menu-item">View Feedback</div>
-            <div class="menu-item active">Current Sit-in</div>
+            <div class="menu-item active" onclick="window.location.href='currentsitin.php'">Current Sit-in</div>
             <div class="menu-item" onclick="window.location.href='sitinhistoryadmin.php'">Sit-in History</div>
-            <div class="menu-item">Students List</div>
-            <div class="menu-item">Logout</div>
+            <div class="menu-item" onclick="window.location.href='studentlist.php'">Students List</div>
+            <div class="menu-item" onclick="window.location.href='logout.php'">Logout</div>
         </div>
     </div>
     </aside>
@@ -244,32 +274,79 @@
                     <tr>
                         <th>Student ID</th>
                         <th>Name</th>
-                        <th>Course</th>
-                        <th>Year</th>
-                        <th>Last Access</th>
-                        <th>Session</th>
+                        <th>Purpose</th>
+                        <th>Lab Room</th>
+                        <th>Time In</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <?php if (mysqli_num_rows($resultSitin) > 0): ?>
+                        <?php while ($row = mysqli_fetch_assoc($resultSitin)): ?>
                             <tr>
-                                <td>22606842</td>
-                                <td>Harold Nabua</td>
-                                <td>BSIT</td>
-                                <td>3</td>
-                                <td>April 20, 2025</td>
-                                <td>20:30</td>
+                                <td><?php echo htmlspecialchars($row['idno']) ?></td>
+                                <td><?php echo htmlspecialchars($row['fullname']); ?></td>
+                                <td><?php echo htmlspecialchars($row['purpose']); ?></td>
+                                <td><?php echo htmlspecialchars($row['lab']); ?></td>
+                                <td><?php echo htmlspecialchars($row['time_in']); ?></td>
                                 <td><span class="status status-active">Active</span></td>
                                 <td>
                                     <div class="action-btns">
-                                        <button class="action-btn">Log-out Session</button>
+                                        <button class="action-btn" onclick="logoutSession('<?php echo htmlspecialchars($row['idno']) ?>')">Log-out Session</button>
                                     </div>
                                 </td>
                             </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="7">No sit-in history found.</td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
-
+            <script>
+                function logoutSession(idno) {
+                    Swal.fire({
+                        title: 'Logout session',
+                        text: 'Do you want to proceed to logout this student to his/her session?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        cancelButtonText: 'Cancel',
+                        confirmButtonText: 'Yes, logout session'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch('http://localhost/ccs_sitinmonitoring_system/logoutsession.php', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded'
+                                    },
+                                    body: 'idno=' + encodeURIComponent(idno)
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    Swal.fire({
+                                        icon: data.type || 'success',
+                                        title: data.type === "success" ? "Success!" : "Error!",
+                                        text: data.message || 'Student logged out successfully'
+                                    }).then(() => {
+                                        if (data.type === "success" || !data.type) {
+                                            location.reload();
+                                        }
+                                    });
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Error!",
+                                        text: "Something went wrong. Please try again."
+                                    });
+                                });
+                        }
+                    });
+                }
+            </script>
             <div class="pagination">
                 <button>Previous</button>
                 <button class="active">1</button>

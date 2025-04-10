@@ -119,7 +119,8 @@ $conn->close();
             margin-bottom: 20px;
         }
 
-        .search-filters input, .search-filters select {
+        .search-filters input,
+        .search-filters select {
             padding: 8px 12px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
@@ -212,6 +213,7 @@ $conn->close();
             <div class="menu-item" onclick="window.location.href='admindashboard.php'">Dashboard</div>
             <div class="menu-item" onclick="window.location.href='adminannouncements.php'">Announcements</div>
             <div class="menu-item">View Feedback</div>
+            <div class="menu-item" onclick="window.location.href='currentsitin.php'">Current Sit-In</div>
             <div class="menu-item active" onclick="window.location.href='sitinhistoryadmin.php'">Sit-in History</div>
             <div class="menu-item" onclick="window.location.href='studentlist.php'">Students List</div>
             <div class="menu-item" onclick="window.location.href='logout.php'">Logout</div>
@@ -235,7 +237,6 @@ $conn->close();
                 const table = document.querySelector('table');
                 console.log(table);
 
-                // Convert table data into an array or string (depending on format)
                 let exportData = '';
                 if (format === 'CSV' || format === 'Excel') {
                     exportData = Array.from(table.rows).map(row =>
@@ -300,29 +301,29 @@ $conn->close();
             });
         </script>
         <div class="card">
-        <div class="card">
-            <div class="card-header">
-                Search & Filters
-            </div>
-            <div class="card-body">
-                <div class="search-filters">
-                    <input type="text" placeholder="Search by ID or Name">
-                    <select>
-                        <option value="">All Laboratories</option>
-                        <option value="lab1">Computer Lab 1</option>
-                        <option value="lab2">Computer Lab 2</option>
-                        <option value="lab3">Computer Lab 3</option>
-                    </select>
-                    <select>
-                        <option value="">Purpose</option>
-                        <option value="lab1">Java Programming</option>
-                        <option value="lab2">Microsoft Word</option>
-                        <option value="lab3">C++ Programming</option>
-                    </select>
-                    <button>Apply</button>
+            <div class="card">
+                <div class="card-header">
+                    Search & Filters
+                </div>
+                <div class="card-body">
+                    <div class="search-filters">
+                        <input type="text" placeholder="Search by ID or Name">
+                        <select>
+                            <option value="">All Laboratories</option>
+                            <option value="lab1">Computer Lab 1</option>
+                            <option value="lab2">Computer Lab 2</option>
+                            <option value="lab3">Computer Lab 3</option>
+                        </select>
+                        <select>
+                            <option value="">Purpose</option>
+                            <option value="lab1">Java Programming</option>
+                            <option value="lab2">Microsoft Word</option>
+                            <option value="lab3">C++ Programming</option>
+                        </select>
+                        <button>Apply</button>
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
 
         <div class="card">
