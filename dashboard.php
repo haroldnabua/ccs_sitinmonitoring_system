@@ -468,7 +468,7 @@ $conn->close();
                 <div class="menu-item">
                     <span>Reservation</span>
                 </div>
-                <div class="menu-item">
+                <div class="menu-item" onclick="window.location.href='studenthistory.php'">
                     <span>Sit-in History</span>
                 </div>
                 <div class="menu-item" onclick="window.location.href='labrules.php'">

@@ -262,7 +262,7 @@ $conn->close();
 </head>
 
 <body>
-<div class="sidebar">
+    <div class="sidebar">
         <div class="sidebar-header">
             <h2>CCS Sit-in Monitoring System</h2>
         </div>
@@ -273,14 +273,14 @@ $conn->close();
             <div class="user-name"><?php echo htmlspecialchars($user['shortname']) ?></div>
             <div class="user-role">Admin</div>
         </div>
-       <div class="sidebar-menu">
+        <div class="sidebar-menu">
             <div class="menu-item" onclick="window.location.href='admindashboard.php'">Dashboard</div>
             <div class="menu-item" onclick="window.location.href='adminannouncements.php'">Announcements</div>
             <div class="menu-item">View Feedback</div>
-            <div class="menu-item">Current Sit-in</div>
+            <div class="menu-item" onclick="window.location.href='currentsitin.php'">Current Sit-in</div>
             <div class="menu-item" onclick="window.location.href='sitinhistoryadmin.php'">Sit-in History</div>
-            <div class="menu-item active">Students List</div>
-            <div class="menu-item">Logout</div>
+            <div class="menu-item active" onclick="window.location.href='studentlist.php'">Students List</div>
+            <div class="menu-item" onclick="window.location.href='logout.php'">Logout</div>
         </div>
     </div>
     </aside>
