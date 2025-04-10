@@ -23,6 +23,9 @@ if ($result->num_rows > 0) {
     exit();
 }
 
+$sitinquery = "SELECT * FROM sit_in WHERE time_out IS NOT NULL ORDER BY time_out DESC";
+$resultSitin = mysqli_query($conn, $sitinquery);
+
 $conn->close();
 ?>
 <!DOCTYPE html>
@@ -32,6 +35,8 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CCS Sit-in Monitoring System - Sit-in History</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <link rel="stylesheet" href="sidebar.css">
     <style>
         :root {
@@ -216,9 +221,84 @@ $conn->close();
     <div class="main-content">
         <div class="page-header">
             <h1 class="page-title">Sit-in History</h1>
+            <select name="format" id="formatType">
+                <option value="PDF">PDF</option>
+                <option value="CSV">CSV</option>
+                <option value="Excel">Excel</option>
+                <option value="print">Print</option>
+            </select>
             <button class="action-button">Export Data</button>
         </div>
+        <script>
+            document.querySelector('.action-button').addEventListener('click', () => {
+                const format = document.getElementById('formatType').value;
+                const table = document.querySelector('table');
+                console.log(table);
 
+                // Convert table data into an array or string (depending on format)
+                let exportData = '';
+                if (format === 'CSV' || format === 'Excel') {
+                    exportData = Array.from(table.rows).map(row =>
+                        Array.from(row.cells).map(cell => cell.textContent).join(',')
+                    ).join('\n');
+                } else if (format === 'PDF') {
+                    const {
+                        jsPDF
+                    } = window.jspdf;
+                    const pdf = new jsPDF();
+                    // Add Header
+                    pdf.setFontSize(14);
+                    pdf.text("University Of Cebu Main", 20, 10);
+                    pdf.text("College of Computer Studies", 20, 20);
+                    pdf.text("Computer Laboratory Sitin Monitoring System Report", 20, 30);
+                    pdf.autoTable({
+                        html: table,
+                        startY: 40
+                    });
+                    pdf.save('sit-in-records.pdf');
+                    return;
+                } else if (format === 'print') {
+                    const win = window.open();
+                    win.document.write(`
+                        <div>
+                            <h3>University Of Cebu Main</h3>
+                            <h4>College of Computer Studies</h4>
+                            <p>Computer Laboratory Sitin Monitoring System Report</p>
+                        </div>
+                    `);
+                    win.document.write(table.outerHTML);
+                    win.print();
+                    win.close();
+                    return;
+                }
+
+                if (format === 'CSV') {
+                    const header = "University Of Cebu Main\nCollege of Computer Studies\nComputer Laboratory Sitin Monitoring System Report\n\n";
+                    const tableData = Array.from(table.rows).map(row =>
+                        Array.from(row.cells).map(cell => cell.textContent).join(',')
+                    ).join('\n');
+                    const exportData = header + tableData;
+                    const blob = new Blob([exportData], {
+                        type: 'text/csv'
+                    });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'sit-in-records.csv';
+                    link.click();
+                } else if (format === 'Excel') {
+                    const header = "University Of Cebu Main\nCollege of Computer Studies\nComputer Laboratory Sitin Monitoring System Report\n\n";
+                    const tableData = Array.from(table.rows).map(row =>
+                        Array.from(row.cells).map(cell => cell.textContent).join('\t')
+                    ).join('\n');
+                    const exportData = header + tableData;
+
+                    const link = document.createElement('a');
+                    link.href = `data:application/vnd.ms-excel,${encodeURIComponent(exportData)}`;
+                    link.download = 'sit-in-records.xls';
+                    link.click();
+                }
+            });
+        </script>
         <div class="card">
         <div class="card">
             <div class="card-header">
@@ -264,51 +344,23 @@ $conn->close();
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>22606842</td>
-                            <td>Harold Nabua</td>
-                            <td>Java Programming</td>
-                            <td>524</td>
-                            <td>Apr 9, 2025</td>
-                            <td>08:30 AM</td>
-                            <td>11:45 AM</td>
-                        </tr>
-                        <tr>
-                            <td>22660088</td>
-                            <td>Mae Albaracin</td>
-                            <td>Microsoft Word</td>
-                            <td>524</td>
-                            <td>Apr 9, 2025</td>
-                            <td>09:15 AM</td>
-                            <td>12:30 PM</td>
-                        </tr>
-                        <tr>
-                            <td>22110099</td>
-                            <td>Jerson Sullano</td>
-                            <td>Database Exercise</td>
-                            <td>530</td>
-                            <td>Apr 9, 2025</td>
-                            <td>10:00 AM</td>
-                            <td>01:15 PM</td>
-                        </tr>
-                        <tr>
-                            <td>21123445</td>
-                            <td>Poland Diosana</td>
-                            <td>Research</td>
-                            <td>544</td>
-                            <td>544</td>
-                            <td>11:30 AM</td>
-                            <td>02:45 PM</td>
-                        </tr>
-                        <tr>
-                            <td>20886713</td>
-                            <td>Clifford Alferez</td>
-                            <td>Thesis Work</td>
-                            <td>544</td>
-                            <td>Apr 9, 2025</td>
-                            <td>01:00 PM</td>
-                            <td>04:30 PM</td>
-                        </tr>
+                        <?php if (mysqli_num_rows($resultSitin) > 0): ?>
+                            <?php while ($row = mysqli_fetch_assoc($resultSitin)): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($row['idno']) ?></td>
+                                    <td><?php echo htmlspecialchars($row['fullname']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['purpose']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['lab']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['date']) ?></td>
+                                    <td><?php echo htmlspecialchars($row['time_in']) ?></td>
+                                    <td><?php echo htmlspecialchars($row['time_out']) ?></td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="7">No sit-in history found.</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
 
