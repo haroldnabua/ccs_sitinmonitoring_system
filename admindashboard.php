@@ -259,54 +259,72 @@ $conn->close();
     <div class="main-content">
         <div class="header">
             <h1>Admin Dashboard</h1>
-
             <script>
                 function openModal() {
                     document.getElementById("reserveModal").style.display = "block";
-                    document.body.classList.add("modal-active"); // Add blur effect
+                    document.body.classList.add("modal-active");
                 }
 
                 function closeModal() {
                     document.getElementById("reserveModal").style.display = "none";
-                    document.body.classList.remove("modal-active"); // Remove blur effect
+                    document.body.classList.remove("modal-active");
                 }
+
                 function triggerSearch() {
-                    var id = document.getElementById('search-id').value; // Get the entered ID number
-                    if (id) {
-                        openModal(id); // Trigger the modal if an ID number is entered
-                    } else {
-                        alert('Please enter an ID number.'); // Show an alert if the input is empty
+                    var id = document.getElementById('search-id').value;
+
+                    if (!id) {
+                        alert('Please enter an ID number.');
+                        return;
                     }
+
+                    fetch('http://localhost/ccs_sitinmonitoring_system/check_id.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: 'id=' + encodeURIComponent(id)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.exists) {
+                                document.getElementById('idNumber').value = data.idno;
+                                document.getElementById('name').value = data.name;
+                                document.getElementById('remaining_session').value = data.session;
+                                openModal();
+                            } else {
+                                alert('ID number not found.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
                 }
 
                 function openModal(id) {
-                    document.getElementById('idNumber').value = id; // Populate the ID number field in the modal
                     document.getElementById("reserveModal").style.display = "block";
-                    document.getElementById("pageContent").classList.add("modal-active"); // Add blur effect
+                    document.getElementById("pageContent").classList.add("modal-active");
                 }
 
                 function closeModal() {
                     document.getElementById("reserveModal").style.display = "none";
-                    document.getElementById("pageContent").classList.remove("modal-active"); // Remove blur effect
+                    document.getElementById("pageContent").classList.remove("modal-active");
                 }
-
             </script>
-
-
-        <div class="search-container">
-                        <input type="text" id="search-id" placeholder="Enter ID Number">
-                        <button onclick="triggerSearch()">Search</button>
-                    </div>
+            <div class="search-container">
+                <input type="text" id="search-id" placeholder="Enter ID Number">
+                <button onclick="triggerSearch()">Search</button>
+            </div>
             <div id="reserveModal" class="modal">
                 <div class="modal-content">
                     <span class="close-btn" onclick="closeModal()">&times;</span>
                     <h2>Sit-in Form</h2>
-                    <form>
+                    <form method="post" action="insert_sitin.php">
                         <label for="idNumber">ID Number:</label>
-                        <input type="text" id="idNumber" name="idNumber" required><br><br>
+                        <input type="text" id="idNumber" name="idNumber" required readonly><br><br>
 
                         <label for="name">Name:</label>
-                        <input type="text" id="name" name="name" required><br><br>
+                        <input type="text" id="name" name="name" required readonly><br><br>
 
                         <label for="purpose">Purpose:</label>
                         <select id="purpose" name="purpose">
@@ -317,11 +335,12 @@ $conn->close();
 
                         <label for="labRoom">Laboratory Room:</label>
                         <select id="labRoom" name="labRoom">
-                            <option value="room1">530</option>
-                            <option value="room2">526</option>
-                            <option value="room3">544</option>
-                            <option value="room3">524</option>
+                            <option value="530">530</option>
+                            <option value="526">526</option>
+                            <option value="544">544</option>
+                            <option value="524">524</option>
                         </select><br><br>
+                        <input type="text" id="remaining_session" required readonly disabled><br><br>
                         <button type="submit">Confirm</button>
                     </form>
                 </div>
