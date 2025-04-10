@@ -328,9 +328,9 @@ $conn->close();
 
                         <label for="purpose">Purpose:</label>
                         <select id="purpose" name="purpose">
-                            <option value="study">Study</option>
-                            <option value="experiment">Experiment</option>
-                            <option value="other">Other</option>
+                            <option value="Study">Study</option>
+                            <option value="Experiment">Experiment</option>
+                            <option value="Other">Other</option>
                         </select><br><br>
 
                         <label for="labRoom">Laboratory Room:</label>

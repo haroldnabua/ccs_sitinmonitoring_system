@@ -7,8 +7,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
     $purpose = $_POST['purpose'];
     $labRoom = $_POST['labRoom'];
-    $date = date("Y-m-d");
-    $timeIn = date("h:i:s");
+    $date = date("M d, Y");
+    $timeIn = date("h:i A");
 
     // Insert into database
     $stmt = mysqli_prepare($conn, "INSERT INTO sit_in (idno, fullname, purpose, lab, date, time_in) VALUES (?, ?, ?, ?, ?, ?)");
