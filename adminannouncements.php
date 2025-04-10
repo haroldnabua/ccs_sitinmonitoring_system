@@ -33,6 +33,7 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>CCS Sit-in Monitoring System - Announcements</title>
+    <link rel="stylesheet" href="sidebar.css">
     <style>
         :root {
             --primary-blue: #3240A1;
@@ -57,70 +58,6 @@ $conn->close();
         body {
             display: flex;
             background-color: var(--light-bg);
-        }
-
-        .sidebar {
-            width: 220px;
-            background-color: var(--primary-blue);
-            color: var(--white);
-            height: 100vh;
-            position: fixed;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .logo {
-            padding: 25px 0;
-            text-align: center;
-            font-weight: bold;
-            font-size: 18px;
-            line-height: 1.3;
-        }
-
-        .admin-profile {
-            padding: 10px 0 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .admin-img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--white);
-        }
-
-        .admin-name {
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        .admin-role {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        .nav-menu {
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .nav-item {
-            padding: 15px 25px;
-            width: 100%;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            text-decoration: none;
-            color: var(--white);
-            display: block;
-        }
-
-        .nav-item:hover,
-        .nav-item.active {
-            background-color: var(--dark-blue);
         }
 
         .main-content {
@@ -173,6 +110,8 @@ $conn->close();
 
         .create-announcement-simple {
             margin-bottom: 30px;
+            margin-right: 200px;
+            margin-left: 0;
         }
 
         .create-announcement-simple h2 {
@@ -348,24 +287,28 @@ $conn->close();
 </head>
 
 <body>
-    <aside class="sidebar">
-        <div class="logo">
-            CCS Sit-in<br>Monitoring<br>System
+<div class="sidebar">
+        <div class="sidebar-header">
+            <h2>CCS Sit-in Monitoring System</h2>
         </div>
-        <div class="admin-profile">
-            <img src="lofi.jpg" alt="Admin Profile" class="admin-img">
-            <div class="admin-name"><?php echo htmlspecialchars($user['shortname']) ?></div>
-            <div class="admin-role">Admin</div>
+        <div class="user-profile">
+            <div class="profile-img">
+                <img src="lofi.jpg" alt="Avatar">
+            </div>
+            <div class="user-name"><?php echo htmlspecialchars($user['shortname']) ?></div>
+            <div class="user-role">Admin</div>
         </div>
-        <nav class="nav-menu">
-            <a href="admindashboard.php" class="nav-item">Dashboard</a>
-            <a href="#" class="nav-item">Announcements</a>
-            <a href="#" class="nav-item">View Feedback</a>
-            <a href="#" class="nav-item">Sit-in History</a>
-            <a href="#" class="nav-item">Students List</a>
-            <a href="#" class="nav-item">Logout</a>
-        </nav>
-    </aside>
+
+        <div class="sidebar-menu">
+            <div class="menu-item" onclick="window.location.href='admindashboard.php'">Dashboard</div>
+            <div class="menu-item active" onclick="window.location.href='adminannouncements.php'">Announcements</div>
+            <div class="menu-item">View Feedback</div>
+            <div class="menu-item">Sit-in History</div>
+            <div class="menu-item">Students List</div>
+            <div class="menu-item">Settings</div>
+            <div class="menu-item">Logout</div>
+        </div>
+    </div>
     <main class="main-content">
         <div class="header">
             <h1>Announcements</h1>
@@ -413,13 +356,6 @@ $conn->close();
             });
         </script>
         <hr class="section-divider">
-
-        <div class="filter-container">
-            <button class="filter-btn active">All</button>
-            <button class="filter-btn">Urgent</button>
-            <button class="filter-btn">Important</button>
-            <button class="filter-btn">Information</button>
-        </div>
         <?php
         include('connection.php');
 
