@@ -200,10 +200,10 @@
         <div class="sidebar-menu">
             <div class="menu-item" onclick="window.location.href='admindashboard.php'">Dashboard</div>
             <div class="menu-item" onclick="window.location.href='adminannouncements.php'">Announcements</div>
-            <div class="menu-item">View Feedback</div>
+            <div class="menu-item active">View Feedback</div>
             <div class="menu-item" onclick="window.location.href='currentsitin.php'">Current Sit-in</div>
             <div class="menu-item" onclick="window.location.href='sitinhistoryadmin.php'">Sit-in History</div>
-            <div class="menu-item active" onclick="window.location.href='studentlist.php'">Students List</div>
+            <div class="menu-item" onclick="window.location.href='studentlist.php'">Students List</div>
             <div class="menu-item" onclick="window.location.href='logout.php'">Logout</div>
         </div>
     </div>
@@ -211,7 +211,7 @@
 
     <main class="main-content">
         <div class="header">
-            <h1>Students List</h1>
+            <h1>View Feedback</h1>
             <button class="btn">Add New Student</button>
         </div>
 
@@ -256,12 +256,12 @@
                     <?php if (mysqli_num_rows($student) > 0): ?>
                         <?php while ($row = mysqli_fetch_assoc($student)): ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($row['idno']); ?></td>
-                                <td><?php echo htmlspecialchars($row['shortname']); ?></td>
-                                <td><?php echo htmlspecialchars($row['course_fullname']); ?></td>
-                                <td><?php echo htmlspecialchars($row['year_full']); ?></td>
-                                <td>Today, 10:35 AM</td>
-                                <td><?php echo htmlspecialchars($row['remaining_session']) ?></td>
+                                <td>22606842</td>
+                                <td>Harold S. Nabua</td>
+                                <td>BSIT</td>
+                                <td>4</td>
+                                <td>C++ Programming</td>
+                                <td><?php echo htmlspecialchars($row['remaining_session']) ?>9:30 AM</td>
                                 <td>10:30 AM</td>
                                 <td>
                                     <div class="action-btns">
