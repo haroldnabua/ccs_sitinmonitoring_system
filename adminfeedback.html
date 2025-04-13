@@ -249,7 +249,7 @@
                         <th>Purpose</th>
                         <th>Time-in</th>
                         <th>Time-out</th>
-                        <th>Actions</th>
+                        <th>Feedback</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -263,11 +263,7 @@
                                 <td>C++ Programming</td>
                                 <td><?php echo htmlspecialchars($row['remaining_session']) ?>9:30 AM</td>
                                 <td>10:30 AM</td>
-                                <td>
-                                    <div class="action-btns">
-                                        <button class="action-btn" onclick="resetStudentSession()">View Feedback</button>
-                                    </div>
-                                </td>
+                                <td>Nice, well done.</td>
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>

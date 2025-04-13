@@ -115,7 +115,6 @@ $conn->close();
         }
 
         .header {
-            display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
@@ -289,6 +288,7 @@ $conn->close();
         <div class="header">
             <h1>Students List</h1>
             <button class="btn">Add New Student</button>
+            <button class="btn">Reset All Session</button>
         </div>
 
         <form id="filterForm" method="GET" action="studentlist.php">
