@@ -32,6 +32,15 @@ $sitinresult = $stmt->get_result();
 $sitinHistory = [];
 if ($sitinresult->num_rows > 0) {
     while ($row = $sitinresult->fetch_assoc()) {
+        // Check if feedback exists for this sit-in record
+        $feedbackQuery = "SELECT sitin_id FROM feedback WHERE sitin_id = ?";
+        $feedbackStmt = $conn->prepare($feedbackQuery);
+        $feedbackStmt->bind_param("i", $row['sitin_id']);
+        $feedbackStmt->execute();
+        $feedbackResult = $feedbackStmt->get_result();
+
+        // Add a flag to indicate if feedback exists
+        $row['has_feedback'] = ($feedbackResult->num_rows > 0);
         $sitinHistory[] = $row;
     }
 }
@@ -192,7 +201,7 @@ $conn->close();
             justify-content: center;
             align-items: center;
         }
-        
+
         .modal-content {
             background-color: white;
             padding: 25px;
@@ -201,26 +210,26 @@ $conn->close();
             max-width: 90%;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        
+
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-        
+
         .close-btn {
             font-size: 24px;
             cursor: pointer;
             color: #777;
         }
-        
+
         .feedback-form label {
             display: block;
             margin: 15px 0 5px;
             font-weight: bold;
         }
-        
+
         .feedback-form textarea {
             width: 100%;
             padding: 10px;
@@ -229,8 +238,6 @@ $conn->close();
             height: 120px;
             resize: vertical;
         }
-
-
     </style>
 </head>
 
@@ -308,63 +315,13 @@ $conn->close();
                                     <td><?php echo htmlspecialchars($record['time_in']); ?></td>
                                     <td><?php echo htmlspecialchars($record['time_in']); ?></td>
                                     <td><?php echo htmlspecialchars($record['time_out']); ?></td>
-                                    <td><button onclick="">Submit Feedback</button></td>
-                                    
-                <div class="modal" id="feedbackModal">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3>Submit Your Feedback</h3>
-                            <span class="close-btn" onclick="closeModal()">&times;</span>
-                        </div>
-                        <form class="feedback-form">
-                            <div>
-                                <label for="feedback">Your Feedback:</label>
-                                <textarea id="feedback" placeholder="Share your experience or concerns..."></textarea>
-                            </div>
-                            
-                            <button type="button" class="submit-form-btn" onclick="submitFeedback()">Submit</button>
-                        </form>
-                    </div>
-                </div>
-                
-                <script>
-                    // Modal functions
-                    function openModal() {
-                        document.getElementById('feedbackModal').style.display = 'flex';
-                    }
-                    
-                    function closeModal() {
-                        document.getElementById('feedbackModal').style.display = 'none';
-                    }
-                    
-                    // Close modal if clicked outside
-                    window.onclick = function(event) {
-                        const modal = document.getElementById('feedbackModal');
-                        if (event.target === modal) {
-                            closeModal();
-                        }
-                    }
-                    
-                    // Submit feedback function
-                    function submitFeedback() {
-                        const studentId = document.getElementById('studentId').value;
-                        const feedbackText = document.getElementById('feedback').value;
-                        
-                        if (!studentId || !feedbackText) {
-                            alert('Please fill in all required fields.');
-                            return;
-                        }
-                        
-                        // This would typically be an AJAX call to your backend
-                        alert('Thank you for your feedback!');
-                        closeModal();
-                        
-                        // Reset form
-                        document.getElementById('studentId').value = '';
-                        document.getElementById('feedback').value = '';
-                        setRating(0);
-                    }
-                </script>
+                                    <td>
+                                        <?php if ($record['has_feedback']): ?>
+                                            <p style="color: green;">Feedback submitted</p>
+                                        <?php else: ?>
+                                            <button onclick="openModal('<?php echo htmlspecialchars($record['sitin_id']) ?>')">Submit Feedback</button>
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -374,7 +331,75 @@ $conn->close();
                         <?php endif; ?>
                     </tbody>
                 </table>
+                <div class="modal" id="feedbackModal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Submit Your Feedback</h3>
+                            <span class="close-btn" onclick="closeModal()">&times;</span>
+                        </div>
+                        <form class="feedback-form">
+                            <div>
+                                <label for="feedback">Your Feedback:</label>
+                                <textarea id="feedback" name="content" placeholder="Share your experience or concerns..."></textarea>
+                            </div>
+                            <input type="hidden" id="sitin_id" value="">
+                            <button type="button" class="submit-form-btn" onclick="submitFeedback()">Submit</button>
+                        </form>
+                    </div>
+                </div>
+                <script>
+                    function openModal(id) {
+                        document.getElementById('sitin_id').value = id;
+                        document.getElementById('feedbackModal').style.display = 'flex';
+                    }
 
+                    function closeModal() {
+                        document.getElementById('feedbackModal').style.display = 'none';
+                    }
+                    window.onclick = function(event) {
+                        const modal = document.getElementById('feedbackModal');
+                        if (event.target === modal) {
+                            closeModal();
+                        }
+                    }
+
+                    function submitFeedback() {
+                        const feedbackText = document.getElementById('feedback').value;
+                        const sitinId = document.getElementById('sitin_id').value;
+                        if (!feedbackText) {
+                            Swal.fire({
+                                text: 'You did not input your feedback.',
+                                icon: 'warning'
+                            });
+                            return;
+                        } else {
+                            Swal.fire({
+                                title: 'Feedback Submitted',
+                                text: 'Your feedback are appreciated.',
+                                icon: 'success',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    fetch('http://localhost/ccs_sitinmonitoring_system/insert_feedback.php', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/x-www-form-urlencoded'
+                                            },
+                                            body: 'id=' + encodeURIComponent(sitinId) + '&feedback=' + encodeURIComponent(feedbackText)
+                                        })
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            console.log('Success:', data);
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                        });
+                                }
+                            });
+                        }
+                        closeModal();
+                        document.getElementById('feedback').value = '';
+                    }
+                </script>
                 <div class="pagination">
                     <button>Previous</button>
                     <button class="active">1</button>
