@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (mysqli_stmt_execute($stmt)) {
         echo "Announcement posted successfully!";
-        header("Location: adminannouncements.html");
+        header("Location: adminannouncements.php");
     } else {
         echo "Failed to post announcement.";
     }
