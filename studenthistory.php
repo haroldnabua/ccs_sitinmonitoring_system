@@ -252,13 +252,16 @@ $conn->close();
                 <span>Dashboard</span>
             </div>
             <div class="menu-item">
-                <span>Reservation</span>
+                <span>Announcements</span>
             </div>
             <div class="menu-item active" onclick="window.location.href='studenthistory.php'">
                 <span>Sit-in History</span>
             </div>
             <div class="menu-item" onclick="window.location.href='labrules.php'">
                 <span><a>Lab Rules/Sit-in Rules</a></span>
+            </div>
+            <div class="menu-item" onclick="window.location.href='studentfeedback.html'">
+                <span><a>View Feedback</a></span>
             </div>
             <div class="menu-item" onclick="window.location.href='editprofile.html'">
                 <span><a>Edit Profile</a></span>

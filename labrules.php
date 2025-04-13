@@ -51,7 +51,7 @@ $conn->close();
                     <span><a>Lab Rules/Sit-in Rules</a></span>
                 </div>
                 <div class="menu-item" onclick="window.location.href='studentfeedback.html'">
-                    <span><a>Feedback</a></span>
+                    <span><a>View Feedback</a></span>
                 </div>
                 <div class="menu-item" onclick="window.location.href='editprofile.php'">
                     <span><a>Edit Profile</a></span>
