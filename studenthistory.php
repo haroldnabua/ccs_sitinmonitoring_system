@@ -322,7 +322,14 @@ $conn->close();
                                         <?php if ($record['has_feedback']): ?>
                                             <p style="color: green;">Feedback submitted</p>
                                         <?php else: ?>
-                                            <button onclick="openModal('<?php echo htmlspecialchars($record['sitin_id']) ?>')">Submit Feedback</button>
+                                            <button onclick="openModal(
+                                                '<?php echo htmlspecialchars($record['sitin_id']); ?>',
+                                                '<?php echo htmlspecialchars($user['shortname']); ?>',
+                                                '<?php echo htmlspecialchars($record['purpose']); ?>',
+                                                '<?php echo htmlspecialchars($user['yearLevel'] ?? ''); ?>',
+                                                '<?php echo htmlspecialchars($record['idno']); ?>',
+                                                '<?php echo htmlspecialchars($user['course'] ?? ''); ?>'
+                                            )">Submit Feedback</button>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -346,13 +353,23 @@ $conn->close();
                                 <textarea id="feedback" name="content" placeholder="Share your experience or concerns..."></textarea>
                             </div>
                             <input type="hidden" id="sitin_id" value="">
+                            <input type="hidden" id="shortname" value="">
+                            <input type="hidden" id="purpose" value="">
+                            <input type="hidden" id="yearlevel" value="">
+                            <input type="hidden" id="idno" value="">
+                            <input type="hidden" id="course" value="">
                             <button type="button" class="submit-form-btn" onclick="submitFeedback()">Submit</button>
                         </form>
                     </div>
                 </div>
                 <script>
-                    function openModal(id) {
+                    function openModal(id, shortname, purpose, yearlevel, idno, course) {
                         document.getElementById('sitin_id').value = id;
+                        document.getElementById('shortname').value = shortname;
+                        document.getElementById('purpose').value = purpose;
+                        document.getElementById('yearlevel').value = yearlevel;
+                        document.getElementById('idno').value = idno;
+                        document.getElementById('course').value = course
                         document.getElementById('feedbackModal').style.display = 'flex';
                     }
 
@@ -369,6 +386,12 @@ $conn->close();
                     function submitFeedback() {
                         const feedbackText = document.getElementById('feedback').value;
                         const sitinId = document.getElementById('sitin_id').value;
+                        const name = document.getElementById('shortname').value;
+                        const purpose = document.getElementById('purpose').value;
+                        const yearlvl = document.getElementById('yearlevel').value;
+                        const studentId = document.getElementById('idno').value;
+                        const program = document.getElementById('course').value;
+                        console.log("Data: " + name + " | " + purpose + " | " + yearlvl + " | " + studentId + " | " + program);
                         if (!feedbackText) {
                             Swal.fire({
                                 text: 'You did not input your feedback.',
@@ -387,7 +410,7 @@ $conn->close();
                                             headers: {
                                                 'Content-Type': 'application/x-www-form-urlencoded'
                                             },
-                                            body: 'id=' + encodeURIComponent(sitinId) + '&feedback=' + encodeURIComponent(feedbackText)
+                                            body: 'id=' + encodeURIComponent(sitinId) + '&feedback=' + encodeURIComponent(feedbackText) + '&name=' + encodeURIComponent(name) + '&purpose=' + encodeURIComponent(purpose) + '&yearlvl=' + encodeURIComponent(yearlvl) + '&studentId=' + encodeURIComponent(studentId) + '&program=' + encodeURIComponent(program)
                                         })
                                         .then(response => response.json())
                                         .then(data => {

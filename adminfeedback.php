@@ -1,3 +1,45 @@
+<?php
+session_start();
+include("connection.php");
+
+if (!isset($_SESSION['idno'])) {
+    echo "ERROR";
+    exit;
+}
+
+$idno = $_SESSION['idno'];
+$role = $_SESSION['role'];
+
+$query = "SELECT *, CONCAT(lastName, ' ', midName, ' ', firstName) AS fullname, CONCAT(firstName, ' ', lastName) AS shortname FROM accounts WHERE idno = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $idno);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $user = $result->fetch_assoc();
+} else {
+    echo "<script>alert('No Users Found.')</script>";
+    exit();
+}
+
+$queryFeedback = "SELECT * FROM feedback";
+$stmt = $conn->prepare($queryFeedback);
+$stmt->execute();
+$feedbackResult = $stmt->get_result();
+
+$fback = [];
+if ($feedbackResult->num_rows > 0) {
+    while ($row = $feedbackResult->fetch_assoc()) {
+        $fback[] = $row;
+    }
+} else {
+    echo "<script>alert('No feedback found.')</script>";
+    exit();
+}
+
+$conn->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -214,30 +256,26 @@
             <h1>View Feedback</h1>
             <button class="btn">Add New Student</button>
         </div>
-
-        <form id="filterForm" method="GET" action="studentlist.php">
-            <div class="search-filter-container">
-                <div class="search-box">
-                    <input type="text" name="search" id="searchInput" placeholder="Search students by ID or name" value="<?php echo htmlspecialchars($search); ?>">
-                </div>
-                <div class="filter-group">
-                    <select class="filter-select" name="program" id="programFilter">
-                        <option value="All Programs" <?php if ($program_filter == 'All Programs') echo 'selected'; ?>>All Programs</option>
-                        <option value="BS Computer Science" <?php if ($program_filter == 'BS Computer Science') echo 'selected'; ?>>BS Computer Science</option>
-                        <option value="BS Information Technology" <?php if ($program_filter == 'BS Information Technology') echo 'selected'; ?>>BS Information Technology</option>
-                        <option value="BS Information Systems" <?php if ($program_filter == 'BS Information Systems') echo 'selected'; ?>>BS Information Systems</option>
-                    </select>
-                    <select class="filter-select" name="year" id="yearFilter">
-                        <option value="All Years" <?php if ($year_filter == 'All Years') echo 'selected'; ?>>All Years</option>
-                        <option value="1st Year" <?php if ($year_filter == '1st Year') echo 'selected'; ?>>1st Year</option>
-                        <option value="2nd Year" <?php if ($year_filter == '2nd Year') echo 'selected'; ?>>2nd Year</option>
-                        <option value="3rd Year" <?php if ($year_filter == '3rd Year') echo 'selected'; ?>>3rd Year</option>
-                        <option value="4th Year" <?php if ($year_filter == '4th Year') echo 'selected'; ?>>4th Year</option>
-                    </select>
-                </div>
+        <div class="search-filter-container">
+            <div class="search-box">
+                <input type="text" name="search" id="searchInput" placeholder="Search students by ID or name">
             </div>
-        </form>
-
+            <div class="filter-group">
+                <select class="filter-select" name="program" id="programFilter">
+                    <option value="All Programs">All Programs</option>
+                    <option value="BS Computer Science">BS Computer Science</option>
+                    <option value="BS Information Technology">BS Information Technology</option>
+                    <option value="BS Information Systems">BS Information Systems</option>
+                </select>
+                <select class="filter-select" name="year" id="yearFilter">
+                    <option value="All Years">All Years</option>
+                    <option value="1st Year">1st Year</option>
+                    <option value="2nd Year">2nd Year</option>
+                    <option value="3rd Year">3rd Year</option>
+                    <option value="4th Year">4th Year</option>
+                </select>
+            </div>
+        </div>
         <div class="card">
             <table class="student-table">
                 <thead>
@@ -253,24 +291,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (mysqli_num_rows($student) > 0): ?>
-                        <?php while ($row = mysqli_fetch_assoc($student)): ?>
-                            <tr>
-                                <td>22606842</td>
-                                <td>Harold S. Nabua</td>
-                                <td>BSIT</td>
-                                <td>4</td>
-                                <td>C++ Programming</td>
-                                <td>04/15/2025</td>
-                                <td>10:30 AM</td>
-                                <td>Nice, well done.</td>
-                            </tr>
-                        <?php endwhile; ?>
-                    <?php else: ?>
+                    <?php foreach ($fback as $row): ?>
                         <tr>
-                            <td colspan="8">No student records found.</td>
+                            <td><?php echo htmlspecialchars($row['idno']); ?></td>
+                            <td><?php echo htmlspecialchars($row['fullname']); ?></td>
+                            <td><?php echo htmlspecialchars($row['program']); ?></td>
+                            <td><?php echo htmlspecialchars($row['yearLevel']); ?></td>
+                            <td><?php echo htmlspecialchars($row['purpose']); ?></td>
+                            <td><?php echo htmlspecialchars(date("m/d/Y", strtotime($row['feedback_date']))); ?></td>
+                            <td><?php echo htmlspecialchars(date("h:i A", strtotime($row['feedback_time']))); ?></td>
+                            <td><?php echo htmlspecialchars($row['content']); ?></td>
                         </tr>
-                    <?php endif; ?>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
 
@@ -283,95 +315,6 @@
             </div>
         </div>
     </main>
-    <script>
-        function resetStudentSession(idno) {
-            Swal.fire({
-                title: 'Reset Session',
-                text: 'You sure to reset this student session?',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: 'Cancel',
-                confirmButtonText: 'Yes, reset'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // AJAX request to reset the session
-                    fetch(`resetstudentsession.php?id=${idno}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            Swal.fire({
-                                icon: data.type,
-                                title: data.type === "success" ? "Success!" : "Error!",
-                                text: data.message
-                            }).then(() => {
-                                if (data.type === "success") {
-                                    location.reload();
-                                }
-                            })
-                        })
-                        .catch(error => {
-                            console.error("Error resetting student session:", error);
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error!",
-                                text: "Something went wrong. Please try again."
-                            });
-                        });
-                }
-            })
-        }
-
-        function deleteStudent(idno) {
-            Swal.fire({
-                title: 'Delete student',
-                text: 'Are you sure to delete this student?',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: 'Cancel',
-                confirmButtonText: 'Yes, delete'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`deletestudent.php?id=${idno}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            Swal.fire({
-                                icon: data.type,
-                                title: data.type === "success" ? "Success!" : "Error!",
-                                text: data.message
-                            }).then(() => {
-                                if (data.type === "success") {
-                                    location.reload();
-                                }
-                            })
-                        })
-                        .catch(error => {
-                            console.error("Error resetting student session:", error);
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error!",
-                                text: "Something went wrong. Please try again."
-                            });
-                        });
-                }
-            });
-        }
-
-        // Real-time search functionality with debounce
-        let searchTimeout;
-        document.getElementById('searchInput').addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                document.getElementById('filterForm').submit();
-            }, 100);
-        });
-
-        document.getElementById('programFilter').addEventListener('change', function() {
-            document.getElementById('filterForm').submit();
-        });
-
-        document.getElementById('yearFilter').addEventListener('change', function() {
-            document.getElementById('filterForm').submit();
-        });
-    </script>
 </body>
 
 </html>
